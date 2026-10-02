@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>CBSE Science Portal</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">CBSE <span>Science Portal</span></div>
+
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#classes">Classes</a>
+        <a href="#subjects">Subjects</a>
+        <a href="#about">About</a>
+        <a href="login.html" class="login-btn">Faculty Login</a>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <p class="small-title">CBSE CLASS 11 & 12</p>
+
+        <h1>
+          Science Learning<br />
+          <span>Made Simple</span>
+        </h1>
+
+        <p>
+          Access notes, study materials, important questions and learning
+          resources in one place.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#classes" class="primary-btn"> Explore Classes </a>
+
+          <a href="#subjects" class="secondary-btn"> View Subjects </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Classes -->
+    <section id="classes" class="section">
+      <div class="section-heading">
+        <p>CHOOSE YOUR CLASS</p>
+
+        <h2>Select Your Class</h2>
+      </div>
+
+      <div class="class-container">
+        <div class="class-card">
+          <div class="class-number">11</div>
+
+          <h3>Class 11</h3>
+
+          <p>
+            Explore Physics, Chemistry, Mathematics, Biology and other study
+            materials.
+          </p>
+
+          <button onclick="selectClass(11)">Explore Class 11 →</button>
+        </div>
+
+        <div class="class-card">
+          <div class="class-number">12</div>
+
+          <h3>Class 12</h3>
+
+          <p>Access chapter notes, important questions and study resources.</p>
+
+          <button onclick="selectClass(12)">Explore Class 12 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subjects -->
+    <section id="subjects" class="section subjects-section">
+      <div class="section-heading">
+        <p>SCIENCE STREAM</p>
+
+        <h2>Subjects</h2>
+      </div>
+
+      <div class="subjects-container">
+        <div class="subject-card">
+          <div class="subject-icon">⚛️</div>
+          <h3>Physics</h3>
+          <p>Notes & Study Materials</p>
+        </div>
+
+        <div class="subject-card">
+          <div class="subject-icon">🧪</div>
+          <h3>Chemistry</h3>
+          <p>Notes & Study Materials</p>
+        </div>
+
+        <div class="subject-card">
+          <div class="subject-icon">📐</div>
+          <h3>Mathematics</h3>
+          <p>Notes & Study Materials</p>
+        </div>
+
+        <div class="subject-card">
+          <div class="subject-icon">🧬</div>
+          <h3>Biology</h3>
+          <p>Notes & Study Materials</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about-section">
+      <div>
+        <p class="small-title">ABOUT THE PORTAL</p>
+
+        <h2>Everything students need, in one place.</h2>
+
+        <p>
+          The CBSE Science Portal provides students with easy access to subject
+          notes, chapter materials, important questions and other learning
+          resources.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <h3>CBSE Science Portal</h3>
+
+      <p>Class 11 & 12 Science Learning Resources</p>
+
+      <p>© 2026 CBSE Science Portal</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
