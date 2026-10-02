@@ -1,0 +1,181 @@
+/* =========================================
+   MATERIALS PAGE
+========================================= */
+
+.materials-page {
+  padding: 70px 8%;
+  background: #f8fafc;
+}
+
+.materials-heading {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.materials-heading p {
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.materials-heading h2 {
+  font-size: 40px;
+  color: #172033;
+  margin: 0;
+}
+
+/* =========================================
+   MATERIAL GRID
+========================================= */
+
+.material-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* =========================================
+   MATERIAL CARD
+========================================= */
+
+.material-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 30px;
+  min-height: 240px;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+  transition: 0.3s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   ICON
+========================================= */
+
+.material-icon {
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 12px;
+
+  font-size: 28px;
+
+  margin-bottom: 20px;
+}
+
+/* =========================================
+   CARD TEXT
+========================================= */
+
+.material-card h3 {
+  font-size: 21px;
+  color: #172033;
+  margin: 0 0 10px;
+}
+
+.material-card p {
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 15px;
+
+  margin: 0 0 25px;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.material-btn {
+  display: inline-block;
+
+  margin-top: auto;
+
+  width: fit-content;
+
+  padding: 10px 18px;
+
+  background: #172033;
+  color: white;
+
+  text-decoration: none;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.3s ease;
+}
+
+.material-btn:hover {
+  background: #2563eb;
+}
+
+/* =========================================
+   BREADCRUMB
+========================================= */
+
+.breadcrumb {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 0;
+
+  color: #64748b;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 900px) {
+  .material-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .materials-page {
+    padding: 50px 20px;
+  }
+
+  .materials-heading h2 {
+    font-size: 30px;
+  }
+
+  .material-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .material-card {
+    padding: 25px;
+  }
+}
