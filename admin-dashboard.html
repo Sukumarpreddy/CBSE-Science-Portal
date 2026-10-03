@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard | CBSE Science Portal</title>
+
+    <!-- Main Website CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Admin Dashboard CSS -->
+    <link rel="stylesheet" href="css/admin-dashboard.css" />
+  </head>
+
+  <body class="admin-page">
+    <!-- =========================================
+         ADMIN HEADER
+    ========================================== -->
+    <header class="admin-header">
+      <div class="admin-brand">
+        <a href="admin-dashboard.html" class="admin-logo">
+          <span class="logo-mark">CB</span>
+
+          <span class="logo-text">
+            <strong>CBSE</strong>
+            <small>Science Portal</small>
+          </span>
+        </a>
+      </div>
+
+      <div class="admin-header-right">
+        <a href="index.html" class="portal-link"> View Portal </a>
+
+        <div class="admin-profile">
+          <div class="admin-avatar">A</div>
+
+          <div class="admin-profile-info">
+            <strong>Administrator</strong>
+            <span>Portal Admin</span>
+          </div>
+        </div>
+
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <!-- =========================================
+         DASHBOARD LAYOUT
+    ========================================== -->
+    <div class="admin-layout">
+      <!-- =====================================
+             SIDEBAR
+        ====================================== -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-top">
+          <div class="sidebar-section-label">ADMINISTRATION</div>
+
+          <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="sidebar-link active">
+              <span class="sidebar-icon">▦</span>
+              <span>Dashboard</span>
+            </a>
+
+            <a href="admin-faculty.html" class="sidebar-link">
+              <span class="sidebar-icon">♙</span>
+              <span>Faculty</span>
+            </a>
+
+            <a href="admin-materials.html" class="sidebar-link">
+              <span class="sidebar-icon">▤</span>
+              <span>Materials</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-divider"></div>
+
+          <div class="sidebar-section-label">PORTAL</div>
+
+          <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">
+              <span class="sidebar-icon">⌂</span>
+              <span>View Portal</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Sidebar Bottom -->
+        <div class="sidebar-bottom">
+          <div class="sidebar-help">
+            <div class="help-icon">?</div>
+
+            <div>
+              <strong>Portal Admin</strong>
+              <span>Manage your academic resources.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- =====================================
+             MAIN CONTENT
+        ====================================== -->
+      <main class="admin-main">
+        <!-- Page Header -->
+        <section class="admin-page-header">
+          <div>
+            <div class="page-eyebrow">PORTAL CONTROL</div>
+
+            <h1>Admin Dashboard</h1>
+
+            <p>
+              Manage faculty, study materials and academic resources from one
+              place.
+            </p>
+          </div>
+
+          <div class="header-date">
+            <span>Portal Administration</span>
+          </div>
+        </section>
+
+        <!-- =================================
+                 WELCOME CARD
+            ================================== -->
+        <section class="admin-welcome">
+          <div class="welcome-content">
+            <span class="welcome-label"> WELCOME BACK </span>
+
+            <h2>Welcome, Administrator</h2>
+
+            <p id="adminEmail">Loading administrator account...</p>
+          </div>
+
+          <div class="welcome-status">
+            <span class="status-dot"></span>
+
+            <span> System Active </span>
+          </div>
+        </section>
+
+        <!-- =================================
+                 STATISTICS
+            ================================== -->
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <span class="section-label"> OVERVIEW </span>
+
+              <h2>Portal Statistics</h2>
+            </div>
+          </div>
+
+          <div class="admin-stats">
+            <!-- Faculty -->
+            <div class="admin-stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon faculty-icon">♙</div>
+
+                <span class="stat-small-label"> ACCOUNTS </span>
+              </div>
+
+              <div class="stat-value" id="facultyCount">0</div>
+
+              <div class="stat-label">Faculty Members</div>
+            </div>
+
+            <!-- Materials -->
+            <div class="admin-stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon material-icon">▤</div>
+
+                <span class="stat-small-label"> RESOURCES </span>
+              </div>
+
+              <div class="stat-value" id="materialCount">0</div>
+
+              <div class="stat-label">Study Materials</div>
+            </div>
+
+            <!-- Classes -->
+            <div class="admin-stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon class-icon">▦</div>
+
+                <span class="stat-small-label"> ACADEMICS </span>
+              </div>
+
+              <div class="stat-value">2</div>
+
+              <div class="stat-label">Classes</div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="admin-stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon subject-icon">◈</div>
+
+                <span class="stat-small-label"> CURRICULUM </span>
+              </div>
+
+              <div class="stat-value">5</div>
+
+              <div class="stat-label">Subjects</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================
+                 MANAGEMENT
+            ================================== -->
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <span class="section-label"> MANAGEMENT </span>
+
+              <h2>Portal Management</h2>
+
+              <p>
+                Manage the people and resources available through the portal.
+              </p>
+            </div>
+          </div>
+
+          <div class="management-grid">
+            <!-- Faculty Management -->
+            <article class="management-card">
+              <div class="management-card-header">
+                <div class="management-icon">♙</div>
+
+                <span class="management-number"> 01 </span>
+              </div>
+
+              <h3>Faculty Management</h3>
+
+              <p>
+                View faculty accounts, monitor access and manage faculty portal
+                permissions.
+              </p>
+
+              <a href="admin-faculty.html" class="management-btn">
+                Manage Faculty
+                <span>→</span>
+              </a>
+            </article>
+
+            <!-- Material Management -->
+            <article class="management-card">
+              <div class="management-card-header">
+                <div class="management-icon">▤</div>
+
+                <span class="management-number"> 02 </span>
+              </div>
+
+              <h3>Material Management</h3>
+
+              <p>
+                Review, edit and manage study materials uploaded by faculty
+                members.
+              </p>
+
+              <a href="admin-materials.html" class="management-btn">
+                Manage Materials
+                <span>→</span>
+              </a>
+            </article>
+
+            <!-- Portal Settings -->
+            <article class="management-card">
+              <div class="management-card-header">
+                <div class="management-icon">⚙</div>
+
+                <span class="management-number"> 03 </span>
+              </div>
+
+              <h3>Portal Settings</h3>
+
+              <p>
+                Manage portal information, academic configuration and future
+                settings.
+              </p>
+
+              <span class="management-btn disabled-btn">
+                Coming Soon
+                <span>→</span>
+              </span>
+            </article>
+          </div>
+        </section>
+
+        <!-- =================================
+                 RECENT MATERIALS
+            ================================== -->
+        <section class="dashboard-section recent-section">
+          <div class="section-heading section-heading-row">
+            <div>
+              <span class="section-label"> RECENT ACTIVITY </span>
+
+              <h2>Recently Added Materials</h2>
+
+              <p>Latest resources uploaded to the portal.</p>
+            </div>
+
+            <a href="admin-materials.html" class="view-all-btn">
+              View All
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="recent-materials-wrapper">
+            <div id="recentMaterials" class="recent-materials">
+              <div class="loading-admin">Loading recent materials...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================
+                 QUICK INFORMATION
+            ================================== -->
+        <section class="admin-info-grid">
+          <div class="info-card">
+            <div class="info-icon">✓</div>
+
+            <div>
+              <h3>Student Access</h3>
+
+              <p>
+                Students can browse available study materials without creating
+                an account.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🔒</div>
+
+            <div>
+              <h3>Secure Administration</h3>
+
+              <p>
+                Faculty and administrator access is protected through Firebase
+                Authentication.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+    <footer class="admin-footer">
+      <div>© 2026 CBSE Science Portal</div>
+
+      <div>Administration Panel</div>
+    </footer>
+
+    <!-- =========================================
+         ADMIN DASHBOARD JAVASCRIPT
+    ========================================== -->
+    <script type="module" src="js/admin-dashboard.js"></script>
+  </body>
+</html>

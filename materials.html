@@ -36,7 +36,36 @@
     </section>
 
     <!-- MATERIALS -->
+    <div class="student-material-tools">
+      <div class="material-search-box">
+        <label for="materialSearch">Search Materials</label>
 
+        <input
+          type="text"
+          id="materialSearch"
+          placeholder="Search notes, questions, assignments..."
+        />
+      </div>
+
+      <div class="material-filter-box">
+        <label for="materialTypeFilter">Material Type</label>
+
+        <select id="materialTypeFilter">
+          <option value="all">All Materials</option>
+          <option value="notes">Notes</option>
+          <option value="important-questions">Important Questions</option>
+          <option value="study-material">Study Material</option>
+          <option value="assignment">Assignments</option>
+          <option value="previous-year">Previous Year Questions</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="materialResultCount" class="material-result-count">
+      Loading materials...
+    </div>
+
+    <div id="materialContainer" class="material-grid"></div>
     <section class="materials-page">
       <!-- BREADCRUMB -->
       <div class="breadcrumb">

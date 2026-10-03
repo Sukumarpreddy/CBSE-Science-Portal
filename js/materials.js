@@ -6,33 +6,66 @@ import {
 
 import { app } from './firebase.js';
 
-// Firebase
+/* ========================================
+   FIREBASE
+======================================== */
+
 const db = getFirestore(app);
 
-// Get URL parameters
+/* ========================================
+   URL PARAMETERS
+======================================== */
+
 const params = new URLSearchParams(window.location.search);
 
 const selectedClass = params.get('class');
+
 const selectedSubject = params.get('subject');
+
 const selectedChapter = params.get('chapter');
 
-// HTML elements
+/* ========================================
+   HTML ELEMENTS
+======================================== */
+
 const chapterTitle = document.getElementById('chapterTitle');
+
 const chapterDescription = document.getElementById('chapterDescription');
+
 const subjectTitle = document.getElementById('subjectTitle');
+
 const materialContainer = document.getElementById('materialContainer');
+
 const breadcrumbClass = document.getElementById('breadcrumbClass');
+
 const breadcrumbChapter = document.getElementById('breadcrumbChapter');
-// Subject names
+
+const materialSearch = document.getElementById('materialSearch');
+
+const materialTypeFilter = document.getElementById('materialTypeFilter');
+
+const materialResultCount = document.getElementById('materialResultCount');
+
+/* ========================================
+   SUBJECT NAMES
+======================================== */
+
 const subjectNames = {
   physics: 'Physics',
+
   chemistry: 'Chemistry',
+
   mathematics: 'Mathematics',
+
   biology: 'Biology',
+
   'computer-science': 'Computer Science',
 };
 
-// Chapter names
+/* ========================================
+   CHAPTER DATA
+======================================== */
+
 const chapters = {
   11: {
     physics: [
@@ -194,7 +227,10 @@ const chapters = {
   },
 };
 
-// Get chapter name
+/* ========================================
+   FIND CHAPTER NAME
+======================================== */
+
 let chapterName = 'Chapter';
 
 if (
@@ -209,25 +245,44 @@ if (
     `Chapter ${selectedChapter}`;
 }
 
-// Page title
+/* ========================================
+   PAGE INFORMATION
+======================================== */
+
 chapterTitle.textContent = chapterName;
 
 subjectTitle.textContent = subjectNames[selectedSubject] || selectedSubject;
 
-chapterDescription.textContent = `Study materials for Class ${selectedClass} ${subjectNames[selectedSubject] || ''}.`;
+chapterDescription.textContent = `Study materials for Class ${selectedClass} ${
+  subjectNames[selectedSubject] || ''
+}`;
+
 breadcrumbClass.textContent = selectedClass;
+
 breadcrumbChapter.textContent = chapterName;
-// Load materials
+
+/* ========================================
+   DATA
+======================================== */
+
+let allMaterials = [];
+
+/* ========================================
+   LOAD MATERIALS
+======================================== */
+
 async function loadMaterials() {
-  materialContainer.innerHTML = '<p>Loading materials...</p>';
+  materialContainer.innerHTML = `
+        <p>Loading materials...</p>
+    `;
 
   try {
     const snapshot = await getDocs(collection(db, 'materials'));
 
-    let foundMaterials = [];
+    allMaterials = [];
 
-    snapshot.forEach(function (doc) {
-      const material = doc.data();
+    snapshot.forEach(function (docSnapshot) {
+      const material = docSnapshot.data();
 
       const materialClass = String(material.class || '');
 
@@ -241,36 +296,95 @@ async function loadMaterials() {
         materialClass === String(selectedClass) &&
         materialSubject === String(selectedSubject).toLowerCase() &&
         (materialChapter.includes(expectedChapter) ||
-          materialChapter.includes(chapterName.toLowerCase()))
+          materialChapter.includes(chapterName.toLowerCase()) ||
+          materialChapter === String(selectedChapter).toLowerCase())
       ) {
-        foundMaterials.push(material);
+        allMaterials.push({
+          id: docSnapshot.id,
+
+          ...material,
+        });
       }
     });
 
-    displayMaterials(foundMaterials);
+    applyFilters();
   } catch (error) {
     console.error('Error loading materials:', error);
 
     materialContainer.innerHTML = `
+
             <div class="no-chapters">
-                <h3>Unable to load materials</h3>
-                <p>Please try again later.</p>
+
+                <h3>
+                    Unable to load materials
+                </h3>
+
+                <p>
+                    Please try again later.
+                </p>
+
             </div>
+
         `;
   }
 }
 
-// Display materials
+/* ========================================
+   FILTER MATERIALS
+======================================== */
+
+function applyFilters() {
+  const search = materialSearch
+    ? materialSearch.value.trim().toLowerCase()
+    : '';
+
+  const selectedType = materialTypeFilter ? materialTypeFilter.value : 'all';
+
+  const filtered = allMaterials.filter(function (material) {
+    const title = String(material.title || '').toLowerCase();
+
+    const description = String(material.description || '').toLowerCase();
+
+    const type = String(material.type || '').toLowerCase();
+
+    const matchesSearch =
+      !search || title.includes(search) || description.includes(search);
+
+    const matchesType = selectedType === 'all' || type === selectedType;
+
+    return matchesSearch && matchesType;
+  });
+
+  displayMaterials(filtered);
+}
+
+/* ========================================
+   DISPLAY MATERIALS
+======================================== */
+
 function displayMaterials(materials) {
+  if (materialResultCount) {
+    materialResultCount.textContent = `${materials.length} material${
+      materials.length === 1 ? '' : 's'
+    } available`;
+  }
+
   if (materials.length === 0) {
     materialContainer.innerHTML = `
+
             <div class="no-chapters">
-                <h3>No materials available yet</h3>
+
+                <h3>
+                    No materials found
+                </h3>
+
                 <p>
-                    Faculty has not uploaded materials
-                    for this chapter yet.
+                    Faculty has not uploaded
+                    matching materials yet.
                 </p>
+
             </div>
+
         `;
 
     return;
@@ -283,38 +397,89 @@ function displayMaterials(materials) {
 
     card.className = 'material-card';
 
+    const resourceURL = material.resourceURL || material.fileURL || '';
+
     card.innerHTML = `
 
-            <div class="material-icon">
-                📚
-            </div>
+                <div class="material-icon">
+                    📚
+                </div>
 
-            <h3>
-                ${material.title || 'Study Material'}
-            </h3>
 
-            <p>
-                ${material.description || 'Study resource'}
-            </p>
+                <h3>
+                    ${escapeHTML(material.title || 'Study Material')}
+                </h3>
 
-            <span class="material-type">
-                ${material.type || 'Material'}
-            </span>
 
-            <a
-                href="${material.resourceURL}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="material-btn"
-            >
-                View Resource →
-            </a>
+                <p>
+                    ${escapeHTML(material.description || 'Study resource')}
+                </p>
 
-        `;
+
+                <span class="material-type">
+                    ${escapeHTML(material.type || 'Material')}
+                </span>
+
+
+                ${
+                  resourceURL
+                    ? `
+                    <a
+                        href="${escapeAttribute(resourceURL)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="material-btn"
+                    >
+                        View Resource →
+                    </a>
+                    `
+                    : `
+                    <span class="material-btn disabled">
+                        Resource unavailable
+                    </span>
+                    `
+                }
+
+            `;
 
     materialContainer.appendChild(card);
   });
 }
 
-// Start
+/* ========================================
+   SEARCH EVENTS
+======================================== */
+
+if (materialSearch) {
+  materialSearch.addEventListener('input', applyFilters);
+}
+
+if (materialTypeFilter) {
+  materialTypeFilter.addEventListener('change', applyFilters);
+}
+
+/* ========================================
+   SECURITY HELPERS
+======================================== */
+
+function escapeHTML(value) {
+  const div = document.createElement('div');
+
+  div.textContent = String(value);
+
+  return div.innerHTML;
+}
+
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* ========================================
+   START
+======================================== */
+
 loadMaterials();

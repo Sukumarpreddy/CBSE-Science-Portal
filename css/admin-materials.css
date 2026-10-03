@@ -1,0 +1,497 @@
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+.admin-header {
+  min-height: 72px;
+
+  padding: 0 7%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: #fff;
+
+  border-bottom: 1px solid #eee;
+}
+
+.admin-logo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 20px;
+
+  color: #222;
+}
+
+.admin-logo strong {
+  font-weight: 800;
+}
+
+.admin-logo span {
+  color: #666;
+}
+
+.admin-nav {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.admin-nav a {
+  text-decoration: none;
+
+  color: #444;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.admin-nav a:hover {
+  color: #000;
+}
+
+.admin-logout {
+  border: none;
+
+  background: #111;
+
+  color: white;
+
+  padding: 10px 17px;
+
+  border-radius: 8px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* ========================= */
+/* HERO */
+/* ========================= */
+
+.materials-admin-hero {
+  padding: 65px 7%;
+
+  background: #f7f7f7;
+
+  border-bottom: 1px solid #eee;
+}
+
+.materials-admin-hero p {
+  margin: 0 0 10px;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  color: #888;
+}
+
+.materials-admin-hero h1 {
+  margin: 0 0 12px;
+
+  font-size: 42px;
+
+  color: #111;
+}
+
+.materials-admin-hero span {
+  color: #666;
+
+  font-size: 15px;
+}
+
+/* ========================= */
+/* CONTAINER */
+/* ========================= */
+
+.materials-admin-container {
+  max-width: 1200px;
+
+  margin: auto;
+
+  padding: 60px 25px;
+}
+
+/* ========================= */
+/* FILTER SECTION */
+/* ========================= */
+
+.filter-section {
+  margin-bottom: 25px;
+}
+
+.filter-heading {
+  margin-bottom: 25px;
+}
+
+.filter-heading p {
+  margin: 0 0 6px;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+
+  color: #888;
+}
+
+.filter-heading h2 {
+  margin: 0;
+
+  font-size: 28px;
+
+  color: #111;
+}
+
+/* ========================= */
+/* FILTERS */
+/* ========================= */
+
+.filters {
+  display: grid;
+
+  grid-template-columns: 2fr 1fr 1fr;
+
+  gap: 15px;
+
+  padding: 20px;
+
+  border: 1px solid #e6e6e6;
+
+  border-radius: 14px;
+
+  background: #fff;
+}
+
+.search-box,
+.filter-box {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.search-box label,
+.filter-box label {
+  font-size: 12px;
+
+  font-weight: 700;
+
+  color: #444;
+}
+
+.search-box input,
+.filter-box select {
+  height: 44px;
+
+  padding: 0 13px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  background: white;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+.search-box input:focus,
+.filter-box select:focus {
+  border-color: #111;
+}
+
+/* ========================= */
+/* RESULT COUNT */
+/* ========================= */
+
+.result-count {
+  margin: 25px 0 15px;
+
+  font-size: 13px;
+
+  color: #777;
+}
+
+/* ========================= */
+/* MATERIAL GRID */
+/* ========================= */
+
+.admin-material-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 20px;
+}
+
+.admin-material-card {
+  padding: 24px;
+
+  border: 1px solid #e5e5e5;
+
+  border-radius: 14px;
+
+  background: #fff;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+
+  transition: 0.2s;
+}
+
+.admin-material-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+}
+
+.admin-material-icon {
+  width: 46px;
+
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border-radius: 11px;
+
+  background: #f4f4f4;
+
+  font-size: 21px;
+}
+
+.admin-material-card h3 {
+  margin: 0 0 8px;
+
+  font-size: 17px;
+
+  color: #111;
+}
+
+.admin-material-card p {
+  margin: 6px 0;
+
+  font-size: 13px;
+
+  color: #777;
+}
+
+.admin-material-type {
+  display: inline-block;
+
+  margin-top: 10px;
+
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  background: #f2f2f2;
+
+  color: #555;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.admin-material-uploader {
+  margin-top: 12px !important;
+
+  font-size: 11px !important;
+
+  color: #999 !important;
+}
+
+/* ========================= */
+/* ACTIONS */
+/* ========================= */
+
+.admin-material-actions {
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.admin-view-btn,
+.admin-edit-btn,
+.admin-delete-btn {
+  flex: 1;
+
+  padding: 9px 10px;
+
+  border-radius: 7px;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  text-decoration: none;
+}
+
+.admin-view-btn {
+  background: #111;
+
+  color: #fff;
+}
+
+.admin-edit-btn {
+  background: #f1f1f1;
+
+  border: 1px solid #ddd;
+
+  color: #222;
+}
+
+.admin-delete-btn {
+  background: #fff;
+
+  border: 1px solid #ddd;
+
+  color: #b00020;
+}
+
+.admin-view-btn:hover {
+  background: #333;
+}
+
+.admin-edit-btn:hover {
+  background: #e8e8e8;
+}
+
+.admin-delete-btn:hover {
+  background: #f8eeee;
+}
+
+/* ========================= */
+/* EMPTY / LOADING */
+/* ========================= */
+
+.no-admin-materials {
+  grid-column: 1 / -1;
+
+  padding: 50px 20px;
+
+  text-align: center;
+
+  border: 1px dashed #ddd;
+
+  border-radius: 14px;
+
+  color: #777;
+}
+
+.no-admin-materials h3 {
+  margin: 0 0 7px;
+
+  color: #333;
+}
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+.admin-footer {
+  margin-top: 30px;
+
+  padding: 40px 20px;
+
+  text-align: center;
+
+  background: #111;
+
+  color: white;
+}
+
+.admin-footer h3 {
+  margin: 0 0 8px;
+}
+
+.admin-footer p {
+  margin: 5px;
+
+  color: #aaa;
+
+  font-size: 13px;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 950px) {
+  .admin-material-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-box {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-header {
+    padding: 0 20px;
+  }
+
+  .admin-nav a {
+    display: none;
+  }
+
+  .materials-admin-hero {
+    padding: 50px 25px;
+  }
+
+  .materials-admin-hero h1 {
+    font-size: 34px;
+  }
+
+  .materials-admin-container {
+    padding: 45px 20px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box {
+    grid-column: auto;
+  }
+
+  .admin-material-grid {
+    grid-template-columns: 1fr;
+  }
+}

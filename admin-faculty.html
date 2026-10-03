@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Faculty Management | CBSE Science Portal</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin-faculty.css" />
+  </head>
+
+  <body>
+    <header class="faculty-admin-header">
+      <div class="faculty-admin-logo">
+        <strong>CBSE</strong>
+        <span>Science Portal</span>
+      </div>
+
+      <nav class="faculty-admin-nav">
+        <a href="admin-dashboard.html"> Dashboard </a>
+
+        <a href="admin-materials.html"> Materials </a>
+
+        <a href="index.html"> Home </a>
+
+        <button id="logoutBtn" class="faculty-admin-logout">Logout</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+
+      <section class="faculty-admin-hero">
+        <div>
+          <p class="faculty-admin-label">ADMINISTRATION</p>
+
+          <h1>Faculty Management</h1>
+
+          <p>
+            View faculty accounts and monitor their uploaded academic resources.
+          </p>
+        </div>
+      </section>
+
+      <!-- MAIN CONTENT -->
+
+      <section class="faculty-admin-container">
+        <!-- HEADER -->
+
+        <div class="faculty-management-heading">
+          <div>
+            <p>FACULTY DIRECTORY</p>
+
+            <h2>All Faculty</h2>
+          </div>
+
+          <div class="faculty-total">
+            <span> Total Faculty </span>
+
+            <strong id="facultyTotal"> — </strong>
+          </div>
+        </div>
+
+        <!-- SEARCH -->
+
+        <div class="faculty-search">
+          <label for="facultySearch"> Search Faculty </label>
+
+          <input
+            type="text"
+            id="facultySearch"
+            placeholder="Search by email..."
+          />
+        </div>
+
+        <!-- FACULTY LIST -->
+
+        <div id="facultyContainer" class="faculty-grid">
+          <div class="faculty-loading">Loading faculty...</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="faculty-admin-footer">
+      <h3>CBSE Science Portal</h3>
+
+      <p>Faculty Management System</p>
+
+      <p>© 2026 CBSE Science Portal</p>
+    </footer>
+
+    <script type="module" src="js/admin-faculty.js"></script>
+  </body>
+</html>
