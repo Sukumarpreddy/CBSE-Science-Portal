@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Add Material | CBSE Science Portal</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/faculty-materials.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="logo">CBSE <span>Science Portal</span></div>
+
+      <nav>
+        <a href="faculty-dashboard.html">Dashboard</a>
+        <a href="index.html">Home</a>
+      </nav>
+    </header>
+
+    <section class="material-hero">
+      <p>FACULTY PANEL</p>
+
+      <h1>Add Study Material</h1>
+
+      <p>
+        Add notes, questions, assignments and other resources for CBSE students.
+      </p>
+    </section>
+
+    <section class="material-form-section">
+      <div class="form-container">
+        <h2>Material Information</h2>
+
+        <p class="form-description">Enter the details of the study material.</p>
+
+        <form id="materialForm">
+          <!-- Class -->
+
+          <div class="form-group">
+            <label for="class"> Class </label>
+
+            <select id="class" required>
+              <option value="">Select Class</option>
+
+              <option value="11">Class 11</option>
+
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+
+          <!-- Subject -->
+
+          <div class="form-group">
+            <label for="subject"> Subject </label>
+
+            <select id="subject" required>
+              <option value="">Select Subject</option>
+
+              <option value="physics">Physics</option>
+
+              <option value="chemistry">Chemistry</option>
+
+              <option value="mathematics">Mathematics</option>
+
+              <option value="biology">Biology</option>
+
+              <option value="computer-science">Computer Science</option>
+            </select>
+          </div>
+
+          <!-- Chapter -->
+
+          <div class="form-group">
+            <label for="chapter"> Chapter </label>
+
+            <input
+              type="text"
+              id="chapter"
+              placeholder="Example: Chapter 5 - Laws of Motion"
+              required
+            />
+          </div>
+
+          <!-- Material Title -->
+
+          <div class="form-group">
+            <label for="title"> Material Title </label>
+
+            <input
+              type="text"
+              id="title"
+              placeholder="Example: Laws of Motion Notes"
+              required
+            />
+          </div>
+
+          <!-- Material Type -->
+
+          <div class="form-group">
+            <label for="type"> Material Type </label>
+
+            <select id="type" required>
+              <option value="">Select Material Type</option>
+
+              <option value="notes">Chapter Notes</option>
+
+              <option value="questions">Important Questions</option>
+
+              <option value="study-material">Study Material</option>
+
+              <option value="assignment">Assignment</option>
+
+              <option value="previous-year">Previous Year Questions</option>
+            </select>
+          </div>
+
+          <!-- Resource URL -->
+
+          <div class="form-group">
+            <label for="resourceURL"> Resource URL </label>
+
+            <input
+              type="url"
+              id="resourceURL"
+              placeholder="https://example.com/notes.pdf"
+              required
+            />
+
+            <small> Paste the link to the PDF or study resource. </small>
+          </div>
+
+          <!-- Description -->
+
+          <div class="form-group">
+            <label for="description"> Description </label>
+
+            <textarea
+              id="description"
+              rows="4"
+              placeholder="Enter a short description..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Add Material</button>
+
+          <p id="formMessage"></p>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <h3>CBSE Science Portal</h3>
+
+      <p>Faculty Material Management</p>
+
+      <p>© 2026 CBSE Science Portal</p>
+    </footer>
+
+    <script type="module" src="js/faculty-materials.js"></script>
+  </body>
+</html>

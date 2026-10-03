@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Faculty Login | CBSE Science Portal</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/login.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="logo">CBSE <span>Science Portal</span></div>
+
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#classes">Classes</a>
+        <a href="index.html#about">About</a>
+      </nav>
+    </header>
+
+    <main class="login-page">
+      <div class="login-card">
+        <div class="login-icon">🔐</div>
+
+        <p class="small-title">FACULTY ACCESS</p>
+
+        <h1>Faculty Login</h1>
+
+        <p class="login-description">
+          Login to upload notes, study materials and resources.
+        </p>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter faculty email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="login-submit">Login</button>
+        </form>
+
+        <p id="loginMessage"></p>
+
+        <a href="index.html" class="back-home"> ← Back to Home </a>
+      </div>
+    </main>
+
+    <footer>
+      <h3>CBSE Science Portal</h3>
+      <p>Class 11 &amp; 12 Science Learning Resources</p>
+      <p>© 2026 CBSE Science Portal</p>
+    </footer>
+
+    <script type="module" src="js/login.js"></script>
+  </body>
+</html>

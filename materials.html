@@ -39,10 +39,11 @@
 
     <section class="materials-page">
       <!-- BREADCRUMB -->
-
       <div class="breadcrumb">
         <a href="index.html">Home</a>
-        › Class 11 › Physics › Physical World
+        › Class <span id="breadcrumbClass">11</span> ›
+        <span id="subjectTitle">Physics</span> ›
+        <span id="breadcrumbChapter">Physical World</span>
       </div>
 
       <!-- HEADING -->
@@ -55,67 +56,7 @@
 
       <!-- MATERIAL CARDS -->
 
-      <div class="material-grid">
-        <!-- CHAPTER NOTES -->
-
-        <div class="material-card">
-          <div class="material-icon">📘</div>
-
-          <h3>Chapter Notes</h3>
-
-          <p>Complete notes and important concepts for this chapter.</p>
-
-          <a href="#" class="material-btn"> View Notes → </a>
-        </div>
-
-        <!-- IMPORTANT QUESTIONS -->
-
-        <div class="material-card">
-          <div class="material-icon">📝</div>
-
-          <h3>Important Questions</h3>
-
-          <p>Important questions for exam preparation.</p>
-
-          <a href="#" class="material-btn"> View Questions → </a>
-        </div>
-
-        <!-- STUDY MATERIAL -->
-
-        <div class="material-card">
-          <div class="material-icon">📚</div>
-
-          <h3>Study Material</h3>
-
-          <p>Additional study resources provided by faculty.</p>
-
-          <a href="#" class="material-btn"> View Materials → </a>
-        </div>
-
-        <!-- ASSIGNMENTS -->
-
-        <div class="material-card">
-          <div class="material-icon">📋</div>
-
-          <h3>Assignments</h3>
-
-          <p>Practice assignments and worksheets for students.</p>
-
-          <a href="#" class="material-btn"> View Assignments → </a>
-        </div>
-
-        <!-- PREVIOUS YEAR QUESTIONS -->
-
-        <div class="material-card">
-          <div class="material-icon">📄</div>
-
-          <h3>Previous Year Questions</h3>
-
-          <p>Previous examination questions for better preparation.</p>
-
-          <a href="#" class="material-btn"> View Questions → </a>
-        </div>
-      </div>
+      <div id="materialContainer" class="material-grid"></div>
     </section>
 
     <!-- FOOTER -->
@@ -128,6 +69,6 @@
       <p>© 2026 CBSE Science Portal</p>
     </footer>
 
-    <script src="js/materials.js"></script>
+    <script type="module" src="js/materials.js"></script>
   </body>
 </html>

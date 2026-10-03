@@ -1,0 +1,101 @@
+.material-hero {
+  text-align: center;
+  padding: 70px 20px;
+  background: #f5f7fb;
+}
+
+.material-hero p:first-child {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.material-hero h1 {
+  font-size: 42px;
+  margin: 10px 0;
+}
+
+.material-form-section {
+  padding: 60px 20px;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.form-container h2 {
+  margin-bottom: 8px;
+}
+
+.form-description {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #777;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+#formMessage {
+  text-align: center;
+  margin-top: 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .material-hero h1 {
+    font-size: 32px;
+  }
+
+  .form-container {
+    padding: 25px;
+  }
+}
