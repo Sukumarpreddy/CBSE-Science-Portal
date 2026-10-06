@@ -2,65 +2,226 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Manage Materials | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/admin-materials.css" />
   </head>
 
   <body>
-    <header class="admin-header">
-      <div class="admin-logo">
-        <strong>CBSE</strong>
-        <span>Science Portal</span>
-      </div>
+    <div class="admin-layout">
+      <!-- =================================================
+         SIDEBAR
+    ================================================== -->
 
-      <nav class="admin-nav">
-        <a href="admin-dashboard.html"> Dashboard </a>
+      <aside class="sidebar">
+        <!-- BRAND -->
 
-        <a href="index.html"> Home </a>
+        <a href="admin-dashboard.html" class="sidebar-brand">
+          <div class="brand-mark">CB</div>
 
-        <button id="logoutBtn" class="admin-logout">Logout</button>
-      </nav>
-    </header>
+          <div class="brand-content">
+            <strong> CBSE </strong>
 
-    <main class="materials-admin-page">
-      <section class="materials-admin-hero">
-        <p>ADMINISTRATION</p>
+            <span> Science Portal </span>
+          </div>
+        </a>
 
-        <h1>Manage Materials</h1>
+        <!-- MAIN MENU -->
 
-        <span>
-          View, edit and manage all academic resources uploaded to the portal.
-        </span>
-      </section>
+        <div class="sidebar-section">
+          <div class="sidebar-label">MAIN MENU</div>
 
-      <section class="materials-admin-container">
-        <!-- FILTERS -->
+          <a href="admin-dashboard.html" class="sidebar-link">
+            <span class="sidebar-icon"> ▦ </span>
 
-        <div class="filter-section">
-          <div class="filter-heading">
-            <p>MATERIAL LIBRARY</p>
+            <span> Dashboard </span>
+          </a>
 
-            <h2>All Study Materials</h2>
+          <a href="admin-faculty.html" class="sidebar-link">
+            <span class="sidebar-icon"> ♙ </span>
+
+            <span> Faculty </span>
+          </a>
+
+          <a href="admin-materials.html" class="sidebar-link active">
+            <span class="sidebar-icon"> ▤ </span>
+
+            <span> All Materials </span>
+          </a>
+        </div>
+
+        <!-- PORTAL -->
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">PORTAL</div>
+
+          <a href="index.html" class="sidebar-link" target="_blank">
+            <span class="sidebar-icon"> ↗ </span>
+
+            <span> View Portal </span>
+          </a>
+        </div>
+
+        <!-- ACCOUNT -->
+
+        <div class="sidebar-section account-section">
+          <div class="sidebar-label">ACCOUNT</div>
+
+          <button type="button" id="logoutBtn" class="sidebar-link logout-btn">
+            <span class="sidebar-icon"> ↪ </span>
+
+            <span> Logout </span>
+          </button>
+        </div>
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+          <strong> Admin Portal </strong>
+
+          <span> Academic Management </span>
+        </div>
+      </aside>
+
+      <!-- =================================================
+         MAIN
+    ================================================== -->
+
+      <main class="main-content">
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+          <div class="topbar-title">
+            <span> ADMINISTRATION </span>
+
+            <h1>Material Management</h1>
           </div>
 
-          <div class="filters">
-            <div class="search-box">
-              <label for="searchInput"> Search </label>
+          <div class="admin-profile">
+            <div class="profile-avatar" id="profileAvatar">A</div>
+
+            <div class="profile-info">
+              <strong id="adminEmail"> Admin </strong>
+
+              <span> Administrator </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- =================================================
+             PAGE INTRO
+        ================================================== -->
+
+        <section class="page-intro">
+          <div>
+            <div class="page-eyebrow">RESOURCE MANAGEMENT</div>
+
+            <h2>All Study Materials</h2>
+
+            <p>
+              Review, search and manage all academic resources uploaded by
+              faculty members.
+            </p>
+          </div>
+
+          <div class="access-status">
+            <span class="status-dot"></span>
+
+            <span> Administrator Access </span>
+          </div>
+        </section>
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">▤</div>
+
+            <div class="stat-content">
+              <span> Total Materials </span>
+
+              <strong id="totalMaterials"> 0 </strong>
+
+              <small> All resources </small>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">11</div>
+
+            <div class="stat-content">
+              <span> Class 11 </span>
+
+              <strong id="class11Count"> 0 </strong>
+
+              <small> Resources </small>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon purple">12</div>
+
+            <div class="stat-content">
+              <span> Class 12 </span>
+
+              <strong id="class12Count"> 0 </strong>
+
+              <small> Resources </small>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon orange">◫</div>
+
+            <div class="stat-content">
+              <span> Subjects </span>
+
+              <strong id="subjectCount"> 0 </strong>
+
+              <small> Covered </small>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================
+             MATERIAL LIBRARY
+        ================================================== -->
+
+        <section class="materials-section">
+          <!-- SECTION HEADER -->
+
+          <div class="section-header">
+            <div>
+              <div class="section-eyebrow">MATERIAL LIBRARY</div>
+
+              <h2>Published Resources</h2>
+            </div>
+
+            <div id="resultCount" class="result-count">0 materials</div>
+          </div>
+
+          <!-- =================================================
+                 FILTER BAR
+            ================================================== -->
+
+          <div class="filter-panel">
+            <div class="search-wrapper">
+              <span class="search-icon"> ⌕ </span>
 
               <input
-                type="text"
+                type="search"
                 id="searchInput"
-                placeholder="Search material..."
+                placeholder="Search materials, chapters or faculty..."
+                autocomplete="off"
               />
             </div>
 
-            <div class="filter-box">
-              <label for="classFilter"> Class </label>
-
+            <div class="filter-controls">
               <select id="classFilter">
                 <option value="all">All Classes</option>
 
@@ -68,10 +229,6 @@
 
                 <option value="12">Class 12</option>
               </select>
-            </div>
-
-            <div class="filter-box">
-              <label for="subjectFilter"> Subject </label>
 
               <select id="subjectFilter">
                 <option value="all">All Subjects</option>
@@ -86,27 +243,93 @@
 
                 <option value="computer-science">Computer Science</option>
               </select>
+
+              <select id="typeFilter">
+                <option value="all">All Types</option>
+
+                <option value="notes">Notes</option>
+
+                <option value="important-questions">Important Questions</option>
+
+                <option value="study-material">Study Material</option>
+
+                <option value="assignment">Assignment</option>
+
+                <option value="previous-year-questions">
+                  Previous Year Questions
+                </option>
+              </select>
             </div>
           </div>
-        </div>
 
-        <!-- RESULTS -->
+          <!-- =================================================
+                 TABLE
+            ================================================== -->
 
-        <div id="materialCountText" class="result-count">
-          Loading materials...
-        </div>
+          <div class="table-card">
+            <div class="table-scroll">
+              <table class="materials-table">
+                <thead>
+                  <tr>
+                    <th>MATERIAL</th>
 
-        <div id="adminMaterialContainer" class="admin-material-grid"></div>
-      </section>
-    </main>
+                    <th>CLASS</th>
 
-    <footer class="admin-footer">
-      <h3>CBSE Science Portal</h3>
+                    <th>SUBJECT</th>
 
-      <p>Administration Panel</p>
+                    <th>TYPE</th>
 
-      <p>© 2026 CBSE Science Portal</p>
-    </footer>
+                    <th>UPLOADED BY</th>
+
+                    <th>DATE</th>
+
+                    <th>ACTION</th>
+                  </tr>
+                </thead>
+
+                <tbody id="materialsContainer">
+                  <tr>
+                    <td colspan="7" class="loading-cell">
+                      <div class="loader"></div>
+
+                      <span> Loading materials... </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- EMPTY -->
+
+          <div id="emptyState" class="state-card hidden">
+            <div class="state-icon">▤</div>
+
+            <h3>No materials found</h3>
+
+            <p>
+              There are no resources matching the current search or filters.
+            </p>
+          </div>
+
+          <!-- ERROR -->
+
+          <div id="errorState" class="state-card error-state hidden">
+            <div class="state-icon">!</div>
+
+            <h3>Unable to load materials</h3>
+
+            <p id="errorMessage">
+              Something went wrong while loading the material library.
+            </p>
+
+            <button type="button" id="retryBtn" class="retry-btn">
+              Try Again
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
 
     <script type="module" src="js/admin-materials.js"></script>
   </body>

@@ -11,10 +11,15 @@ const selectedSubject = params.get('subject');
 // PAGE ELEMENTS
 // ========================================
 
-const pageTitle = document.getElementById('pageTitle');
 const pageDescription = document.getElementById('pageDescription');
+
 const subjectTitle = document.getElementById('subjectTitle');
+
 const chapterContainer = document.getElementById('chapterContainer');
+
+const subjectBreadcrumb = document.getElementById('subjectBreadcrumb');
+
+const classBreadcrumbLink = document.getElementById('classBreadcrumbLink');
 
 // ========================================
 // SUBJECT NAMES
@@ -37,6 +42,10 @@ const subjectNames = {
 // ========================================
 
 const chapters = {
+  // ========================================
+  // CLASS 11
+  // ========================================
+
   11: {
     physics: [
       'Physical World',
@@ -183,6 +192,10 @@ const chapters = {
     ],
   },
 
+  // ========================================
+  // CLASS 12
+  // ========================================
+
   12: {
     physics: [
       'Electric Charges and Fields',
@@ -313,21 +326,41 @@ const chapters = {
 };
 
 // ========================================
-// CHECK DATA
+// VALIDATE SELECTION
 // ========================================
 
 if (!selectedClass || !selectedSubject) {
-  pageTitle.textContent = 'Invalid Selection';
+  subjectTitle.textContent = 'Invalid Selection';
 
   pageDescription.textContent = 'Please select a class and subject.';
+
+  subjectBreadcrumb.textContent = 'Subject';
 } else {
-  const subjectName = subjectNames[selectedSubject];
+  // Get subject name
 
-  subjectTitle.textContent = subjectName || selectedSubject;
+  const subjectName = subjectNames[selectedSubject] || selectedSubject;
 
-  pageTitle.textContent = `Class ${selectedClass}`;
+  // ========================================
+  // UPDATE PAGE TITLE
+  // ========================================
+
+  subjectTitle.textContent = subjectName;
+
+  // ========================================
+  // UPDATE DESCRIPTION
+  // ========================================
 
   pageDescription.textContent = `Explore ${subjectName} chapters and study materials.`;
+
+  // ========================================
+  // UPDATE BREADCRUMB
+  // ========================================
+
+  subjectBreadcrumb.textContent = subjectName;
+
+  classBreadcrumbLink.textContent = `Class ${selectedClass}`;
+
+  classBreadcrumbLink.href = `class.html?class=${selectedClass}`;
 }
 
 // ========================================
@@ -337,28 +370,37 @@ if (!selectedClass || !selectedSubject) {
 const selectedChapters = chapters[selectedClass]?.[selectedSubject];
 
 // ========================================
-// DISPLAY CHAPTERS
+// CHECK CHAPTER DATA
 // ========================================
 
 if (!selectedChapters) {
   chapterContainer.innerHTML = `
 
-    <div class="no-chapters">
+        <div class="no-chapters">
 
-      <h3>
-        Chapters not available
-      </h3>
+            <h3>
+                Chapters not available
+            </h3>
 
-      <p>
-        Chapter information for this
-        subject is not available yet.
-      </p>
+            <p>
+                Chapter information for this
+                subject is not available yet.
+            </p>
 
-    </div>
+        </div>
 
-  `;
-} else {
-  selectedChapters.forEach((chapter, index) => {
+    `;
+}
+
+// ========================================
+// DISPLAY CHAPTERS
+// ========================================
+else {
+  selectedChapters.forEach(function (chapter, index) {
+    // ========================================
+    // CREATE CARD
+    // ========================================
+
     const chapterCard = document.createElement('div');
 
     chapterCard.className = 'chapter-card';
@@ -370,39 +412,48 @@ if (!selectedChapters) {
     const chapterNumber = String(index + 1).padStart(2, '0');
 
     // ========================================
-    // CREATE CHAPTER CARD
+    // MATERIAL URL
+    // ========================================
+
+    const materialURL = `materials.html?class=${selectedClass}&subject=${selectedSubject}&chapter=${index + 1}`;
+
+    // ========================================
+    // CARD HTML
     // ========================================
 
     chapterCard.innerHTML = `
 
-      <div class="chapter-number">
-
-        ${chapterNumber}
-
-      </div>
+                <div class="chapter-number">
+                    ${chapterNumber}
+                </div>
 
 
-      <div class="chapter-content">
+                <div class="chapter-content">
 
-        <h3>
-          ${chapter}
-        </h3>
+                    <h3>
+                        ${chapter}
+                    </h3>
 
-        <p>
-          Notes • Questions • Study Material
-        </p>
+                    <p>
+                        Notes • Questions • Study Material
+                    </p>
+
+                    <a
+                        href="${materialURL}"
+                        class="chapter-link"
+                    >
+                        Explore Chapter
+                        <span>→</span>
+                    </a>
+
+                </div>
 
 
-        <a
-          href="materials.html?class=${selectedClass}&subject=${selectedSubject}&chapter=${index + 1}"
-          class="chapter-link"
-        >
-          Explore Chapter →
-        </a>
+                <div class="chapter-arrow">
+                    →
+                </div>
 
-      </div>
-
-    `;
+            `;
 
     // ========================================
     // ADD CARD TO PAGE

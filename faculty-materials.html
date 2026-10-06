@@ -2,162 +2,486 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Add Material | CBSE Science Portal</title>
+    <title>Materials | Faculty Portal | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/faculty-materials.css" />
   </head>
 
   <body>
-    <header class="header">
-      <div class="logo">CBSE <span>Science Portal</span></div>
+    <div class="faculty-layout">
+      <!-- =========================================
+         SIDEBAR
+    ========================================== -->
 
-      <nav>
-        <a href="faculty-dashboard.html">Dashboard</a>
-        <a href="index.html">Home</a>
-      </nav>
-    </header>
+      <aside class="sidebar">
+        <!-- BRAND -->
 
-    <section class="material-hero">
-      <p>FACULTY PANEL</p>
+        <a href="faculty-dashboard.html" class="sidebar-brand">
+          <div class="brand-mark">CB</div>
 
-      <h1>Add Study Material</h1>
+          <div class="brand-content">
+            <strong> CBSE </strong>
 
-      <p>
-        Add notes, questions, assignments and other resources for CBSE students.
-      </p>
-    </section>
+            <span> Science Portal </span>
+          </div>
+        </a>
 
-    <section class="material-form-section">
-      <div class="form-container">
-        <h2>Material Information</h2>
+        <!-- MAIN NAVIGATION -->
 
-        <p class="form-description">Enter the details of the study material.</p>
+        <div class="sidebar-section">
+          <div class="sidebar-label">MAIN MENU</div>
 
-        <form id="materialForm">
-          <!-- Class -->
+          <a href="faculty-dashboard.html" class="sidebar-link">
+            <span class="sidebar-icon"> ▦ </span>
 
-          <div class="form-group">
-            <label for="class"> Class </label>
+            <span> Dashboard </span>
+          </a>
 
-            <select id="class" required>
-              <option value="">Select Class</option>
+          <a href="faculty-materials-list.html" class="sidebar-link">
+            <span class="sidebar-icon"> ▤ </span>
 
-              <option value="11">Class 11</option>
+            <span> My Materials </span>
+          </a>
 
-              <option value="12">Class 12</option>
-            </select>
+          <a href="faculty-materials.html" class="sidebar-link active">
+            <span class="sidebar-icon"> ＋ </span>
+
+            <span> Upload Material </span>
+          </a>
+        </div>
+
+        <!-- ACCOUNT -->
+
+        <div class="sidebar-section account-section">
+          <div class="sidebar-label">ACCOUNT</div>
+
+          <button type="button" id="logoutBtn" class="sidebar-link logout-btn">
+            <span class="sidebar-icon"> ↪ </span>
+
+            <span> Logout </span>
+          </button>
+        </div>
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+          <strong> Faculty Portal </strong>
+
+          <span> Academic Resource Management </span>
+        </div>
+      </aside>
+
+      <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+      <main class="main-content">
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+          <div class="topbar-title">
+            <span> FACULTY PORTAL </span>
+
+            <h1>Materials</h1>
           </div>
 
-          <!-- Subject -->
+          <div class="faculty-profile">
+            <div class="profile-avatar" id="profileAvatar">F</div>
 
-          <div class="form-group">
-            <label for="subject"> Subject </label>
+            <div class="profile-info">
+              <strong id="facultyEmail"> Faculty Account </strong>
 
-            <select id="subject" required>
-              <option value="">Select Subject</option>
+              <span> Faculty Account </span>
+            </div>
+          </div>
+        </header>
 
-              <option value="physics">Physics</option>
+        <!-- =========================================
+             PAGE HEADER
+        ========================================== -->
 
-              <option value="chemistry">Chemistry</option>
+        <section class="page-header">
+          <div class="page-header-content">
+            <div class="page-eyebrow">RESOURCE MANAGEMENT</div>
 
-              <option value="mathematics">Mathematics</option>
+            <h2 id="pageHeading">Add Study Material</h2>
 
-              <option value="biology">Biology</option>
-
-              <option value="computer-science">Computer Science</option>
-            </select>
+            <p id="pageDescription">
+              Upload academic resources for students and organize them by class,
+              subject and chapter.
+            </p>
           </div>
 
-          <!-- Chapter -->
+          <div class="header-status">
+            <span class="status-dot"></span>
 
-          <div class="form-group">
-            <label for="chapter"> Chapter </label>
+            <span> Faculty Access </span>
+          </div>
+        </section>
 
-            <input
-              type="text"
-              id="chapter"
-              placeholder="Example: Chapter 5 - Laws of Motion"
-              required
-            />
+        <!-- =========================================
+             MAIN WORKSPACE
+        ========================================== -->
+
+        <section class="workspace">
+          <!-- FORM CARD -->
+
+          <div class="form-card">
+            <!-- FORM HEADER -->
+
+            <div class="form-card-header">
+              <div>
+                <span class="form-eyebrow"> NEW RESOURCE </span>
+
+                <h3>Material Information</h3>
+              </div>
+
+              <div class="required-note">
+                <span>*</span>
+                Required fields
+              </div>
+            </div>
+
+            <!-- FORM -->
+
+            <form id="materialForm" class="material-form">
+              <!-- ACADEMIC CLASSIFICATION -->
+
+              <div class="form-section">
+                <div class="section-heading">
+                  <div class="section-number">01</div>
+
+                  <div>
+                    <h4>Academic Classification</h4>
+
+                    <p>Select where this resource belongs.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid three-columns">
+                  <!-- CLASS -->
+
+                  <div class="form-group">
+                    <label for="classSelect">
+                      Class
+                      <span>*</span>
+                    </label>
+
+                    <select id="classSelect" name="class" required>
+                      <option value="">Select Class</option>
+
+                      <option value="11">Class 11</option>
+
+                      <option value="12">Class 12</option>
+                    </select>
+                  </div>
+
+                  <!-- SUBJECT -->
+
+                  <div class="form-group">
+                    <label for="subjectSelect">
+                      Subject
+                      <span>*</span>
+                    </label>
+
+                    <select id="subjectSelect" name="subject" required>
+                      <option value="">Select Subject</option>
+
+                      <option value="physics">Physics</option>
+
+                      <option value="chemistry">Chemistry</option>
+
+                      <option value="mathematics">Mathematics</option>
+
+                      <option value="biology">Biology</option>
+
+                      <option value="computer-science">Computer Science</option>
+                    </select>
+                  </div>
+
+                  <!-- CHAPTER -->
+
+                  <div class="form-group">
+                    <label for="chapterSelect">
+                      Chapter
+                      <span>*</span>
+                    </label>
+
+                    <select id="chapterSelect" name="chapter" required>
+                      <option value="">Select chapter</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RESOURCE DETAILS -->
+
+              <div class="form-section">
+                <div class="section-heading">
+                  <div class="section-number">02</div>
+
+                  <div>
+                    <h4>Resource Details</h4>
+
+                    <p>Provide the basic information students will see.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <!-- MATERIAL TYPE -->
+
+                  <div class="form-group">
+                    <label for="typeSelect">
+                      Material Type
+                      <span>*</span>
+                    </label>
+
+                    <select id="typeSelect" name="type" required>
+                      <option value="">Select material type</option>
+
+                      <option value="notes">Notes</option>
+
+                      <option value="important-questions">
+                        Important Questions
+                      </option>
+
+                      <option value="study-material">Study Material</option>
+
+                      <option value="assignment">Assignment</option>
+
+                      <option value="previous-year-questions">
+                        Previous Year Questions
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- TITLE -->
+
+                  <div class="form-group">
+                    <label for="titleInput">
+                      Material Title
+                      <span>*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      id="titleInput"
+                      name="title"
+                      placeholder="e.g. Laws of Motion - Important Notes"
+                      autocomplete="off"
+                      required
+                    />
+
+                    <small>
+                      Use a clear title that students can easily understand.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RESOURCE LINK -->
+
+              <div class="form-section">
+                <div class="section-heading">
+                  <div class="section-number">03</div>
+
+                  <div>
+                    <h4>Resource Link</h4>
+
+                    <p>Add the online location of your study material.</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="resourceURL">
+                    Resource URL
+                    <span>*</span>
+                  </label>
+
+                  <div class="url-input-wrapper">
+                    <div class="url-icon">↗</div>
+
+                    <input
+                      type="url"
+                      id="resourceURL"
+                      name="resourceURL"
+                      placeholder="https://drive.google.com/..."
+                      autocomplete="off"
+                      required
+                    />
+                  </div>
+
+                  <small>
+                    Add the link to the PDF, document or online resource that
+                    students can access.
+                  </small>
+                </div>
+              </div>
+
+              <!-- DESCRIPTION -->
+
+              <div class="form-section">
+                <div class="section-heading">
+                  <div class="section-number">04</div>
+
+                  <div>
+                    <h4>Additional Information</h4>
+
+                    <p>Add a short description if needed.</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="descriptionInput">
+                    Description
+                    <span class="optional"> Optional </span>
+                  </label>
+
+                  <textarea
+                    id="descriptionInput"
+                    name="description"
+                    rows="5"
+                    placeholder="Briefly describe what students will find in this resource..."
+                  ></textarea>
+
+                  <small>
+                    Keep the description short and useful for students.
+                  </small>
+                </div>
+              </div>
+
+              <!-- FORM MESSAGE -->
+
+              <div
+                id="formMessage"
+                class="form-message"
+                aria-live="polite"
+              ></div>
+
+              <!-- FORM ACTIONS -->
+
+              <div class="form-actions">
+                <button type="button" id="clearBtn" class="btn btn-secondary">
+                  <span> Clear </span>
+                </button>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary">
+                  <span class="btn-icon"> ＋ </span>
+
+                  <span id="submitBtnText"> Upload Material </span>
+                </button>
+              </div>
+            </form>
           </div>
 
-          <!-- Material Title -->
+          <!-- =========================================
+                 INFORMATION PANEL
+            ========================================== -->
 
-          <div class="form-group">
-            <label for="title"> Material Title </label>
+          <aside class="info-column">
+            <!-- BEFORE UPLOAD -->
 
-            <input
-              type="text"
-              id="title"
-              placeholder="Example: Laws of Motion Notes"
-              required
-            />
-          </div>
+            <div class="info-card">
+              <div class="info-card-header">
+                <div class="info-icon blue">✓</div>
 
-          <!-- Material Type -->
+                <div>
+                  <h3>Before uploading</h3>
 
-          <div class="form-group">
-            <label for="type"> Material Type </label>
+                  <p>Quick checklist</p>
+                </div>
+              </div>
 
-            <select id="type" required>
-              <option value="">Select Material Type</option>
+              <div class="checklist">
+                <div class="check-item">
+                  <span class="check-mark"> ✓ </span>
 
-              <option value="notes">Chapter Notes</option>
+                  <span> Verify the correct class. </span>
+                </div>
 
-              <option value="questions">Important Questions</option>
+                <div class="check-item">
+                  <span class="check-mark"> ✓ </span>
 
-              <option value="study-material">Study Material</option>
+                  <span> Select the correct subject and chapter. </span>
+                </div>
 
-              <option value="assignment">Assignment</option>
+                <div class="check-item">
+                  <span class="check-mark"> ✓ </span>
 
-              <option value="previous-year">Previous Year Questions</option>
-            </select>
-          </div>
+                  <span> Use a clear and meaningful title. </span>
+                </div>
 
-          <!-- Resource URL -->
+                <div class="check-item">
+                  <span class="check-mark"> ✓ </span>
 
-          <div class="form-group">
-            <label for="resourceURL"> Resource URL </label>
+                  <span> Make sure the resource URL works. </span>
+                </div>
+              </div>
+            </div>
 
-            <input
-              type="url"
-              id="resourceURL"
-              placeholder="https://example.com/notes.pdf"
-              required
-            />
+            <!-- STUDENT ACCESS -->
 
-            <small> Paste the link to the PDF or study resource. </small>
-          </div>
+            <div class="info-card student-card">
+              <div class="info-card-header">
+                <div class="info-icon green">◉</div>
 
-          <!-- Description -->
+                <div>
+                  <h3>Student Access</h3>
 
-          <div class="form-group">
-            <label for="description"> Description </label>
+                  <p>What happens after upload</p>
+                </div>
+              </div>
 
-            <textarea
-              id="description"
-              rows="4"
-              placeholder="Enter a short description..."
-            ></textarea>
-          </div>
+              <p class="student-description">
+                Published resources become available to students through the
+                appropriate Class → Subject → Chapter section.
+              </p>
 
-          <button type="submit" class="submit-btn">Add Material</button>
+              <div class="access-flow">
+                <div class="flow-item">
+                  <strong>01</strong>
+                  <span>Class</span>
+                </div>
 
-          <p id="formMessage"></p>
-        </form>
-      </div>
-    </section>
+                <div class="flow-arrow">→</div>
 
-    <footer>
-      <h3>CBSE Science Portal</h3>
+                <div class="flow-item">
+                  <strong>02</strong>
+                  <span>Subject</span>
+                </div>
 
-      <p>Faculty Material Management</p>
+                <div class="flow-arrow">→</div>
 
-      <p>© 2026 CBSE Science Portal</p>
-    </footer>
+                <div class="flow-item">
+                  <strong>03</strong>
+                  <span>Chapter</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESOURCE POLICY -->
+
+            <div class="info-card policy-card">
+              <div class="policy-icon">i</div>
+
+              <div>
+                <h3>Resource Guidelines</h3>
+
+                <p>
+                  Upload only academic material relevant to the selected class,
+                  subject and chapter.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <!-- FIREBASE / PAGE SCRIPT -->
 
     <script type="module" src="js/faculty-materials.js"></script>
   </body>

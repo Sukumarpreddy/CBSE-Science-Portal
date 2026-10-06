@@ -2,93 +2,360 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Faculty Management - CBSE Science Portal"
+    />
 
     <title>Faculty Management | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/admin-faculty.css" />
   </head>
 
   <body>
-    <header class="faculty-admin-header">
-      <div class="faculty-admin-logo">
-        <strong>CBSE</strong>
-        <span>Science Portal</span>
-      </div>
+    <div class="admin-layout">
+      <!-- =========================================
+             SIDEBAR
+        ========================================== -->
 
-      <nav class="faculty-admin-nav">
-        <a href="admin-dashboard.html"> Dashboard </a>
+      <aside class="sidebar">
+        <a href="admin-dashboard.html" class="brand">
+          <div class="brand-mark">CB</div>
 
-        <a href="admin-materials.html"> Materials </a>
+          <div class="brand-text">
+            <strong>CBSE</strong>
+            <span>Science Portal</span>
+          </div>
+        </a>
 
-        <a href="index.html"> Home </a>
+        <!-- MAIN MENU -->
 
-        <button id="logoutBtn" class="faculty-admin-logout">Logout</button>
-      </nav>
-    </header>
+        <div class="sidebar-section">
+          <p class="sidebar-title">MAIN MENU</p>
 
-    <main>
-      <!-- HERO -->
+          <a href="admin-dashboard.html" class="sidebar-link">
+            <span class="sidebar-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
 
-      <section class="faculty-admin-hero">
-        <div>
-          <p class="faculty-admin-label">ADMINISTRATION</p>
+          <a href="admin-faculty.html" class="sidebar-link active">
+            <span class="sidebar-icon">♙</span>
+            <span>Faculty</span>
+          </a>
 
-          <h1>Faculty Management</h1>
-
-          <p>
-            View faculty accounts and monitor their uploaded academic resources.
-          </p>
+          <a href="admin-materials.html" class="sidebar-link">
+            <span class="sidebar-icon">▤</span>
+            <span>All Materials</span>
+          </a>
         </div>
-      </section>
 
-      <!-- MAIN CONTENT -->
+        <!-- PORTAL -->
 
-      <section class="faculty-admin-container">
-        <!-- HEADER -->
+        <div class="sidebar-section">
+          <p class="sidebar-title">PORTAL</p>
 
-        <div class="faculty-management-heading">
+          <a href="index.html" class="sidebar-link" target="_blank">
+            <span class="sidebar-icon">⌂</span>
+            <span>View Portal</span>
+          </a>
+        </div>
+
+        <!-- ACCOUNT -->
+
+        <div class="sidebar-section account-section">
+          <p class="sidebar-title">ACCOUNT</p>
+
+          <button
+            type="button"
+            id="logoutBtn"
+            class="sidebar-link logout-button"
+          >
+            <span class="sidebar-icon">↪</span>
+            <span>Logout</span>
+          </button>
+        </div>
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+          <strong>Admin Portal</strong>
+
+          <span> Academic Management </span>
+        </div>
+      </aside>
+
+      <!-- =========================================
+             MAIN CONTENT
+        ========================================== -->
+
+      <main class="main-content">
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+          <div class="topbar-left">
+            <span class="topbar-label"> ADMINISTRATION </span>
+
+            <h1>Faculty Management</h1>
+          </div>
+
+          <div class="admin-profile">
+            <div class="admin-avatar">A</div>
+
+            <div class="admin-profile-info">
+              <strong id="adminEmail"> Administrator </strong>
+
+              <span> Admin Account </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- PAGE INTRO -->
+
+        <section class="page-intro">
           <div>
-            <p>FACULTY DIRECTORY</p>
+            <span class="section-label"> FACULTY DIRECTORY </span>
 
-            <h2>All Faculty</h2>
+            <h2>Manage Faculty</h2>
+
+            <p>
+              Manage faculty profiles and monitor their academic contributions.
+            </p>
           </div>
 
-          <div class="faculty-total">
-            <span> Total Faculty </span>
+          <button type="button" id="openAddFacultyBtn" class="primary-button">
+            <span>+</span>
+            Add Faculty
+          </button>
+        </section>
 
-            <strong id="facultyTotal"> — </strong>
+        <!-- =========================================
+                 STATISTICS
+            ========================================== -->
+
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">♙</div>
+
+            <div class="stat-content">
+              <span> Total Faculty </span>
+
+              <strong id="totalFaculty"> 0 </strong>
+
+              <small> Faculty profiles </small>
+            </div>
           </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">✓</div>
+
+            <div class="stat-content">
+              <span> Active Faculty </span>
+
+              <strong id="activeFaculty"> 0 </strong>
+
+              <small> Active accounts </small>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon purple">▤</div>
+
+            <div class="stat-content">
+              <span> Materials Uploaded </span>
+
+              <strong id="facultyMaterials"> 0 </strong>
+
+              <small> Faculty resources </small>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================================
+                 FACULTY SECTION
+            ========================================== -->
+
+        <section class="content-card">
+          <!-- SECTION HEADER -->
+
+          <div class="content-header">
+            <div>
+              <span class="section-label"> FACULTY DIRECTORY </span>
+
+              <h2>Faculty Members</h2>
+            </div>
+
+            <span id="resultCount" class="result-count"> 0 faculty </span>
+          </div>
+
+          <!-- SEARCH -->
+
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="search-icon"> ⌕ </span>
+
+              <input
+                type="search"
+                id="searchInput"
+                placeholder="Search by name or email..."
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <!-- TABLE -->
+
+          <div class="table-wrapper">
+            <table class="faculty-table">
+              <thead>
+                <tr>
+                  <th>FACULTY</th>
+
+                  <th>EMAIL</th>
+
+                  <th>ROLE</th>
+
+                  <th>MATERIALS</th>
+
+                  <th>STATUS</th>
+
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+
+              <tbody id="facultyContainer">
+                <tr>
+                  <td colspan="6" class="loading-cell">
+                    <div class="loading-state">
+                      <span class="spinner"></span>
+
+                      <span> Loading faculty... </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- EMPTY STATE -->
+
+          <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">♙</div>
+
+            <h3>No faculty found</h3>
+
+            <p>There are no faculty members matching your search.</p>
+          </div>
+
+          <!-- ERROR STATE -->
+
+          <div id="errorState" class="error-state hidden">
+            <strong> Unable to load faculty </strong>
+
+            <p id="errorMessage">Please refresh the page and try again.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- =========================================
+         ADD FACULTY MODAL
+    ========================================== -->
+
+    <div id="facultyModal" class="modal-overlay hidden">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <div class="modal-header">
+          <div>
+            <span class="section-label"> FACULTY MANAGEMENT </span>
+
+            <h2 id="modalTitle">Add Faculty</h2>
+          </div>
+
+          <button
+            type="button"
+            id="closeModalBtn"
+            class="modal-close"
+            aria-label="Close"
+          >
+            ×
+          </button>
         </div>
 
-        <!-- SEARCH -->
+        <div class="modal-body">
+          <p class="modal-description">
+            Create a faculty profile in the portal. The faculty member's
+            authentication account must be created separately.
+          </p>
 
-        <div class="faculty-search">
-          <label for="facultySearch"> Search Faculty </label>
+          <form id="facultyForm">
+            <!-- NAME -->
 
-          <input
-            type="text"
-            id="facultySearch"
-            placeholder="Search by email..."
-          />
+            <div class="form-group">
+              <label for="facultyNameInput"> Full Name </label>
+
+              <input
+                type="text"
+                id="facultyNameInput"
+                placeholder="Enter faculty name"
+                required
+              />
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+              <label for="facultyEmailInput"> Email Address </label>
+
+              <input
+                type="email"
+                id="facultyEmailInput"
+                placeholder="faculty@example.com"
+                required
+              />
+            </div>
+
+            <!-- ROLE -->
+
+            <div class="form-group">
+              <label for="facultyRoleInput"> Role </label>
+
+              <select id="facultyRoleInput" required>
+                <option value="faculty">Faculty</option>
+              </select>
+            </div>
+
+            <!-- MESSAGE -->
+
+            <div id="formMessage" class="form-message hidden"></div>
+
+            <!-- ACTIONS -->
+
+            <div class="modal-actions">
+              <button
+                type="button"
+                id="cancelModalBtn"
+                class="secondary-button"
+              >
+                Cancel
+              </button>
+
+              <button type="submit" id="saveFacultyBtn" class="primary-button">
+                Save Faculty
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
+    </div>
 
-        <!-- FACULTY LIST -->
-
-        <div id="facultyContainer" class="faculty-grid">
-          <div class="faculty-loading">Loading faculty...</div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="faculty-admin-footer">
-      <h3>CBSE Science Portal</h3>
-
-      <p>Faculty Management System</p>
-
-      <p>© 2026 CBSE Science Portal</p>
-    </footer>
+    <!-- JAVASCRIPT -->
 
     <script type="module" src="js/admin-faculty.js"></script>
   </body>

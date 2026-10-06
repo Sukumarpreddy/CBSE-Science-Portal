@@ -1,21 +1,16 @@
-// ================================
-// GET CLASS FROM URL
-// ================================
-
 const params = new URLSearchParams(window.location.search);
 
 const selectedClass = params.get('class');
 
-// ================================
-// SHOW SELECTED CLASS
-// ================================
-
 const classTitle = document.getElementById('classTitle');
+const classBreadcrumb = document.getElementById('classBreadcrumb');
 
 if (selectedClass === '12') {
   classTitle.textContent = 'Class 12';
+  classBreadcrumb.textContent = 'Class 12';
 } else {
   classTitle.textContent = 'Class 11';
+  classBreadcrumb.textContent = 'Class 11';
 }
 
 // ================================

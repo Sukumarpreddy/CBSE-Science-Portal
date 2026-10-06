@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>My Materials | CBSE Science Portal</title>
+
+    <link rel="stylesheet" href="css/faculty-materials-list.css" />
+  </head>
+
+  <body>
+    <div class="portal-layout">
+      <!-- ================= SIDEBAR ================= -->
+
+      <aside class="sidebar">
+        <a href="index.html" class="brand">
+          <div class="brand-logo">CB</div>
+
+          <div class="brand-text">
+            <strong>CBSE</strong>
+            <span>Science Portal</span>
+          </div>
+        </a>
+
+        <nav class="sidebar-navigation">
+          <div class="navigation-group">
+            <span class="navigation-title"> MAIN MENU </span>
+
+            <a href="faculty-dashboard.html" class="navigation-link">
+              <span class="navigation-icon">▦</span>
+              <span>Dashboard</span>
+            </a>
+
+            <a
+              href="faculty-materials-list.html"
+              class="navigation-link active"
+            >
+              <span class="navigation-icon">▤</span>
+              <span>My Materials</span>
+            </a>
+
+            <a href="faculty-materials.html" class="navigation-link">
+              <span class="navigation-icon">＋</span>
+              <span>Upload Material</span>
+            </a>
+          </div>
+
+          <div class="navigation-group">
+            <span class="navigation-title"> ACCOUNT </span>
+
+            <a href="#" class="navigation-link">
+              <span class="navigation-icon">◎</span>
+              <span>Profile</span>
+            </a>
+
+            <button
+              type="button"
+              id="logoutBtn"
+              class="navigation-link logout-button"
+            >
+              <span class="navigation-icon">↪</span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="footer-line"></div>
+
+          <strong> Faculty Portal </strong>
+
+          <span> Academic Management </span>
+        </div>
+      </aside>
+
+      <!-- ================= MAIN ================= -->
+
+      <main class="main-content">
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+          <div class="topbar-heading">
+            <span> FACULTY PORTAL </span>
+
+            <h1>My Materials</h1>
+          </div>
+
+          <div class="faculty-account">
+            <div class="faculty-avatar">F</div>
+
+            <div class="faculty-details">
+              <strong id="facultyEmail"> Faculty </strong>
+
+              <span> Faculty Account </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+
+        <div class="page-content">
+          <!-- PAGE HERO -->
+
+          <section class="page-hero">
+            <div class="page-hero-content">
+              <span class="eyebrow"> RESOURCE MANAGEMENT </span>
+
+              <h2>Your Uploaded Materials</h2>
+
+              <p>
+                View, search and manage the academic resources uploaded from
+                your faculty account.
+              </p>
+            </div>
+
+            <a href="faculty-materials.html" class="upload-button">
+              <span>＋</span>
+              Upload Material
+            </a>
+          </section>
+
+          <!-- STATISTICS -->
+
+          <section class="statistics-grid">
+            <div class="stat-card">
+              <div class="stat-icon blue">▤</div>
+
+              <div class="stat-content">
+                <span> Total Materials </span>
+
+                <strong id="totalMaterials"> 0 </strong>
+
+                <small> Uploaded resources </small>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon green">◫</div>
+
+              <div class="stat-content">
+                <span> Classes </span>
+
+                <strong id="totalClasses"> 0 </strong>
+
+                <small> Classes covered </small>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon purple">◈</div>
+
+              <div class="stat-content">
+                <span> Subjects </span>
+
+                <strong id="totalSubjects"> 0 </strong>
+
+                <small> Subjects covered </small>
+              </div>
+            </div>
+          </section>
+
+          <!-- RESOURCE SECTION -->
+
+          <section class="resource-section">
+            <!-- RESOURCE HEADER -->
+
+            <div class="resource-header">
+              <div>
+                <span class="eyebrow"> RESOURCE LIBRARY </span>
+
+                <h2>Uploaded Resources</h2>
+
+                <p>Search and manage your study materials.</p>
+              </div>
+
+              <div id="resultCount" class="result-count">0 materials</div>
+            </div>
+
+            <!-- FILTERS -->
+
+            <div class="filter-container">
+              <div class="search-container">
+                <span class="search-icon"> ⌕ </span>
+
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Search materials..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <select id="classFilter" class="filter-select">
+                <option value="">All Classes</option>
+
+                <option value="11">Class 11</option>
+
+                <option value="12">Class 12</option>
+              </select>
+
+              <select id="subjectFilter" class="filter-select">
+                <option value="">All Subjects</option>
+
+                <option value="physics">Physics</option>
+
+                <option value="chemistry">Chemistry</option>
+
+                <option value="mathematics">Mathematics</option>
+
+                <option value="biology">Biology</option>
+
+                <option value="computer-science">Computer Science</option>
+              </select>
+
+              <select id="typeFilter" class="filter-select">
+                <option value="">All Types</option>
+
+                <option value="notes">Notes</option>
+
+                <option value="important-questions">Important Questions</option>
+
+                <option value="study-material">Study Material</option>
+
+                <option value="assignment">Assignment</option>
+
+                <option value="previous-year-questions">
+                  Previous Year Questions
+                </option>
+              </select>
+            </div>
+
+            <!-- MATERIALS -->
+
+            <div id="materialsContainer" class="materials-grid">
+              <div class="loading-state">
+                <div class="loading-spinner"></div>
+
+                <p>Loading your materials...</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="js/faculty-materials-list.js"></script>
+  </body>
+</html>

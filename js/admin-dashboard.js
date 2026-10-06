@@ -2,11 +2,8 @@ import {
   getFirestore,
   collection,
   getDocs,
-  doc,
   getDoc,
-  query,
-  orderBy,
-  limit,
+  doc,
 } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
 
 import {
@@ -17,33 +14,36 @@ import {
 
 import { app } from './firebase.js';
 
-// ========================================
-// FIREBASE
-// ========================================
-
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ========================================
-// HTML ELEMENTS
-// ========================================
+/* =========================================================
+   DOM
+========================================================= */
 
-const adminEmail = document.getElementById('adminEmail');
+const totalFaculty = document.getElementById('totalFaculty');
 
-const facultyCount = document.getElementById('facultyCount');
+const totalMaterials = document.getElementById('totalMaterials');
 
-const materialCount = document.getElementById('materialCount');
+const class11Count = document.getElementById('class11Count');
+
+const class12Count = document.getElementById('class12Count');
+
+const subjectCount = document.getElementById('subjectCount');
 
 const recentMaterials = document.getElementById('recentMaterials');
 
+const adminEmail = document.getElementById('adminEmail');
+
+const profileAvatar = document.getElementById('profileAvatar');
+
 const logoutBtn = document.getElementById('logoutBtn');
 
-// ========================================
-// CHECK ADMIN LOGIN
-// ========================================
+/* =========================================================
+   AUTH
+========================================================= */
 
-onAuthStateChanged(auth, async function (user) {
-  // User is not logged in
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = 'login.html';
 
@@ -51,16 +51,16 @@ onAuthStateChanged(auth, async function (user) {
   }
 
   try {
-    // Get current user's profile
+    /* -----------------------------------------
+           ADMIN CHECK
+        ----------------------------------------- */
+
     const userRef = doc(db, 'users', user.uid);
 
     const userSnapshot = await getDoc(userRef);
 
-    // User profile doesn't exist
     if (!userSnapshot.exists()) {
-      alert('Your account is not registered in the portal.');
-
-      await signOut(auth);
+      console.error('Admin profile not found.');
 
       window.location.href = 'login.html';
 
@@ -69,213 +69,331 @@ onAuthStateChanged(auth, async function (user) {
 
     const userData = userSnapshot.data();
 
-    // Check admin role
     if (userData.role !== 'admin') {
-      alert('Access denied. Admin account required.');
+      alert('You do not have administrator access.');
 
-      window.location.href = 'faculty-dashboard.html';
+      window.location.href = 'login.html';
 
       return;
     }
 
-    // Display admin email
-    adminEmail.textContent = user.email || userData.email || 'Administrator';
+    /* -----------------------------------------
+           ADMIN PROFILE
+        ----------------------------------------- */
 
-    // Load dashboard
-    loadDashboard();
+    if (adminEmail) {
+      adminEmail.textContent = user.email || 'Administrator';
+    }
+
+    if (profileAvatar) {
+      profileAvatar.textContent = (user.email || 'A').charAt(0).toUpperCase();
+    }
+
+    /* -----------------------------------------
+           LOAD DASHBOARD
+        ----------------------------------------- */
+
+    await loadDashboard();
   } catch (error) {
-    console.error('Admin verification error:', error);
-
-    alert('Unable to verify administrator.');
+    console.error('Admin dashboard error:', error);
   }
 });
 
-// ========================================
-// LOAD DASHBOARD
-// ========================================
+/* =========================================================
+   LOAD DASHBOARD
+========================================================= */
 
 async function loadDashboard() {
-  await loadFacultyCount();
-
-  await loadMaterialCount();
-
-  await loadRecentMaterials();
-}
-
-// ========================================
-// FACULTY COUNT
-// ========================================
-
-async function loadFacultyCount() {
   try {
+    /* -----------------------------------------
+           LOAD USERS
+        ----------------------------------------- */
+
     const usersSnapshot = await getDocs(collection(db, 'users'));
 
-    let count = 0;
+    const users = usersSnapshot.docs.map((userDoc) => ({
+      id: userDoc.id,
+      ...userDoc.data(),
+    }));
 
-    usersSnapshot.forEach(function (userDoc) {
-      const userData = userDoc.data();
+    const faculty = users.filter((user) => user.role === 'faculty');
 
-      if (userData.role === 'faculty') {
-        count++;
-      }
-    });
+    /* -----------------------------------------
+           LOAD MATERIALS
+        ----------------------------------------- */
 
-    facultyCount.textContent = count;
-  } catch (error) {
-    console.error('Faculty count error:', error);
-
-    facultyCount.textContent = '0';
-  }
-}
-
-// ========================================
-// MATERIAL COUNT
-// ========================================
-
-async function loadMaterialCount() {
-  try {
     const materialsSnapshot = await getDocs(collection(db, 'materials'));
 
-    materialCount.textContent = materialsSnapshot.size;
-  } catch (error) {
-    console.error('Material count error:', error);
+    const materials = materialsSnapshot.docs.map((materialDoc) => ({
+      id: materialDoc.id,
+      ...materialDoc.data(),
+    }));
 
-    materialCount.textContent = '0';
-  }
-}
+    console.log('Dashboard materials:', materials);
 
-// ========================================
-// RECENT MATERIALS
-// ========================================
+    /* -----------------------------------------
+           STATISTICS
+        ----------------------------------------- */
 
-async function loadRecentMaterials() {
-  recentMaterials.innerHTML = `
-        <div class="loading-admin">
-            Loading recent materials...
-        </div>
-    `;
+    const class11 = materials.filter(
+      (material) => normalizeClass(material.class) === '11',
+    ).length;
 
-  try {
-    const materialsRef = collection(db, 'materials');
+    const class12 = materials.filter(
+      (material) => normalizeClass(material.class) === '12',
+    ).length;
 
-    const recentQuery = query(
-      materialsRef,
-      orderBy('uploadedAt', 'desc'),
-      limit(6),
+    const subjects = new Set(
+      materials
+        .map((material) => normalizeSubject(material.subject))
+        .filter(Boolean),
     );
 
-    const snapshot = await getDocs(recentQuery);
+    totalFaculty.textContent = faculty.length;
 
-    // No materials
-    if (snapshot.empty) {
-      recentMaterials.innerHTML = `
-                <div class="no-admin-materials">
+    totalMaterials.textContent = materials.length;
 
-                    <h3>
-                        No materials uploaded yet
-                    </h3>
+    class11Count.textContent = class11;
 
-                    <p>
-                        Faculty materials will appear here.
-                    </p>
+    class12Count.textContent = class12;
 
-                </div>
-            `;
+    subjectCount.textContent = subjects.size;
 
-      return;
-    }
+    /* -----------------------------------------
+           RECENT MATERIALS
+        ----------------------------------------- */
 
-    recentMaterials.innerHTML = '';
+    materials.sort((a, b) => getTime(b.uploadedAt) - getTime(a.uploadedAt));
 
-    // IMPORTANT:
-    // Don't call the Firestore document "document"
-    // because "document" is the browser DOM object.
-
-    snapshot.forEach(function (docSnapshot) {
-      const material = docSnapshot.data();
-
-      const card = document.createElement('div');
-
-      card.className = 'recent-material-card';
-
-      card.innerHTML = `
-
-                    <div class="recent-icon">
-                        📚
-                    </div>
-
-                    <h3>
-                        ${escapeHTML(material.title || 'Untitled Material')}
-                    </h3>
-
-                    <p>
-                        Class
-                        ${escapeHTML(material.class || '-')}
-                        •
-                        ${escapeHTML(material.subject || '-')}
-                    </p>
-
-                    <p>
-                        ${escapeHTML(
-                          material.chapter || 'Chapter not specified',
-                        )}
-                    </p>
-
-                    <span class="recent-type">
-                        ${escapeHTML(material.type || 'Material')}
-                    </span>
-
-                `;
-
-      recentMaterials.appendChild(card);
-    });
+    renderRecentMaterials(materials.slice(0, 5));
   } catch (error) {
-    console.error('Recent materials error:', error);
-
-    // If orderBy uploadedAt causes a problem,
-    // show a useful message instead of breaking.
+    console.error('Unable to load dashboard:', error);
 
     recentMaterials.innerHTML = `
-
-            <div class="no-admin-materials">
-
-                <h3>
-                    Unable to load recent materials
-                </h3>
-
-                <p>
-                    Please check the Firestore
-                    uploadedAt field.
-                </p>
-
+            <div class="dashboard-loading">
+                Unable to load dashboard data.
             </div>
-
         `;
   }
 }
 
-// ========================================
-// ESCAPE HTML
-// ========================================
+/* =========================================================
+   RECENT MATERIALS
+========================================================= */
 
-function escapeHTML(value) {
-  const div = document.createElement('div');
+function renderRecentMaterials(materials) {
+  if (!materials.length) {
+    recentMaterials.innerHTML = `
+            <div class="dashboard-loading">
+                No materials have been uploaded yet.
+            </div>
+        `;
 
-  div.textContent = String(value);
+    return;
+  }
 
-  return div.innerHTML;
+  recentMaterials.innerHTML = materials
+    .map((material) => createRecentMaterial(material))
+    .join('');
 }
 
-// ========================================
-// LOGOUT
-// ========================================
+/* =========================================================
+   MATERIAL ROW
+========================================================= */
 
-logoutBtn.addEventListener('click', async function () {
+function createRecentMaterial(material) {
+  const title = escapeHTML(material.title || 'Untitled Material');
+
+  const subject = formatSubject(normalizeSubject(material.subject));
+
+  const classValue = normalizeClass(material.class);
+
+  const type = formatType(normalizeType(material.type));
+
+  const uploader = material.uploadedBy || 'Faculty';
+
+  const date = formatDate(material.uploadedAt);
+
+  return `
+        <div class="recent-material">
+
+            <div class="material-icon-small">
+                ${getMaterialIcon(normalizeType(material.type))}
+            </div>
+
+
+            <div class="material-info">
+
+                <strong>
+                    ${title}
+                </strong>
+
+                <span>
+                    Class ${escapeHTML(classValue)}
+                    ·
+                    ${escapeHTML(subject)}
+                    ·
+                    ${escapeHTML(type)}
+                </span>
+
+            </div>
+
+
+            <div class="material-meta">
+
+                <strong>
+                    ${escapeHTML(uploader)}
+                </strong>
+
+                <span>
+                    ${escapeHTML(date)}
+                </span>
+
+            </div>
+
+        </div>
+    `;
+}
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function normalizeClass(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return String(value).replace(/class/gi, '').trim();
+}
+
+function normalizeSubject(value) {
+  if (!value) {
+    return '';
+  }
+
+  return String(value).trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+function normalizeType(value) {
+  if (!value) {
+    return '';
+  }
+
+  return String(value).trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+function formatSubject(subject) {
+  const names = {
+    physics: 'Physics',
+
+    chemistry: 'Chemistry',
+
+    mathematics: 'Mathematics',
+
+    biology: 'Biology',
+
+    'computer-science': 'Computer Science',
+  };
+
+  return (
+    names[subject] ||
+    subject
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  );
+}
+
+function formatType(type) {
+  const names = {
+    notes: 'Notes',
+
+    'important-questions': 'Important Questions',
+
+    'study-material': 'Study Material',
+
+    assignment: 'Assignment',
+
+    'previous-year-questions': 'Previous Year Questions',
+  };
+
+  return names[type] || formatSubject(type) || 'Material';
+}
+
+function getMaterialIcon(type) {
+  switch (type) {
+    case 'notes':
+      return 'N';
+
+    case 'important-questions':
+      return '?';
+
+    case 'study-material':
+      return 'S';
+
+    case 'assignment':
+      return 'A';
+
+    case 'previous-year-questions':
+      return 'P';
+
+    default:
+      return 'M';
+  }
+}
+
+function getTime(timestamp) {
+  if (!timestamp) {
+    return 0;
+  }
+
+  if (typeof timestamp.toMillis === 'function') {
+    return timestamp.toMillis();
+  }
+
+  if (timestamp.seconds !== undefined) {
+    return timestamp.seconds * 1000;
+  }
+
+  const value = new Date(timestamp).getTime();
+
+  return Number.isNaN(value) ? 0 : value;
+}
+
+function formatDate(timestamp) {
+  const time = getTime(timestamp);
+
+  if (!time) {
+    return '—';
+  }
+
+  return new Date(time).toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+logoutBtn?.addEventListener('click', async () => {
   try {
     await signOut(auth);
 
     window.location.href = 'login.html';
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('Logout failed:', error);
   }
 });

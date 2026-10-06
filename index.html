@@ -2,148 +2,605 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>CBSE Science Portal</title>
+    <meta
+      name="description"
+      content="CBSE Science Portal for Class 11 and Class 12 students. Access chapters, notes, study materials and important questions."
+    />
 
+    <title>CBSE Science Portal | Class 11 & 12</title>
+
+    <!-- Main Website CSS -->
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <!-- Header -->
-    <header class="header">
-      <div class="logo">CBSE <span>Science Portal</span></div>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-      <nav>
-        <a href="#home">Home</a>
-        <a href="#classes">Classes</a>
-        <a href="#subjects">Subjects</a>
-        <a href="#about">About</a>
-        <a href="login.html" class="login-btn">Faculty Login</a>
+    <header class="site-header">
+      <div class="header-container">
+        <!-- Logo -->
+        <a href="index.html" class="site-logo">
+          <span class="logo-mark"> CB </span>
+
+          <span class="logo-text">
+            <strong>CBSE</strong>
+            <small>Science Portal</small>
+          </span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link active"> Home </a>
+
+          <a href="#classes" class="nav-link"> Classes </a>
+
+          <a href="#subjects" class="nav-link"> Subjects </a>
+
+          <a href="#about" class="nav-link"> About </a>
+
+          <a href="login.html" class="nav-login"> Faculty Login </a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button
+          class="mobile-menu-btn"
+          id="mobileMenuBtn"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <nav class="mobile-nav" id="mobileNav">
+        <a href="index.html"> Home </a>
+
+        <a href="#classes"> Classes </a>
+
+        <a href="#subjects"> Subjects </a>
+
+        <a href="#about"> About </a>
+
+        <a href="login.html" class="mobile-login"> Faculty Login </a>
       </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-      <div class="hero-content">
-        <p class="small-title">CBSE CLASS 11 & 12</p>
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
-        <h1>
-          Science Learning<br />
-          <span>Made Simple</span>
-        </h1>
+    <main>
+      <section class="hero-section">
+        <div class="hero-container">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <div class="hero-eyebrow">
+              <span class="eyebrow-line"></span>
 
-        <p>
-          Access notes, study materials, important questions and learning
-          resources in one place.
-        </p>
+              <span> CBSE CLASS 11 &amp; 12 </span>
+            </div>
 
-        <div class="hero-buttons">
-          <a href="#classes" class="primary-btn"> Explore Classes </a>
+            <h1>
+              Science Learning
+              <span>Made Simple.</span>
+            </h1>
 
-          <a href="#subjects" class="secondary-btn"> View Subjects </a>
+            <p class="hero-description">
+              Access organized chapters, study materials, notes and important
+              questions for your CBSE Science subjects — all in one place.
+            </p>
+
+            <div class="hero-actions">
+              <a href="class.html?class=11" class="primary-btn">
+                Explore Class 11
+                <span>→</span>
+              </a>
+
+              <a href="class.html?class=12" class="secondary-btn">
+                Explore Class 12
+                <span>→</span>
+              </a>
+            </div>
+
+            <div class="hero-note">
+              <span class="note-icon"> ✓ </span>
+
+              <span> No student login required </span>
+            </div>
+          </div>
+
+          <!-- Hero Visual -->
+          <div class="hero-visual">
+            <div class="hero-card-main">
+              <div class="hero-card-top">
+                <span class="hero-card-label"> STUDY PORTAL </span>
+
+                <span class="hero-card-status"> ● Active </span>
+              </div>
+
+              <div class="hero-card-title">CBSE Science</div>
+
+              <p>
+                Your academic resources, organized by class, subject and
+                chapter.
+              </p>
+
+              <div class="hero-mini-grid">
+                <div class="hero-mini-card">
+                  <span class="mini-icon"> 11 </span>
+
+                  <div>
+                    <strong> Class 11 </strong>
+
+                    <small> Science </small>
+                  </div>
+                </div>
+
+                <div class="hero-mini-card">
+                  <span class="mini-icon"> 12 </span>
+
+                  <div>
+                    <strong> Class 12 </strong>
+
+                    <small> Science </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-progress">
+                <div class="progress-header">
+                  <span> Learning Resources </span>
+
+                  <strong> Organized </strong>
+                </div>
+
+                <div class="progress-bar">
+                  <span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Cards -->
+
+            <div class="floating-card floating-card-one">
+              <span class="floating-icon"> 📚 </span>
+
+              <div>
+                <strong> Study Materials </strong>
+
+                <small> Notes &amp; Resources </small>
+              </div>
+            </div>
+
+            <div class="floating-card floating-card-two">
+              <span class="floating-icon"> ✓ </span>
+
+              <div>
+                <strong> Easy Access </strong>
+
+                <small> No student login </small>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Classes -->
-    <section id="classes" class="section">
-      <div class="section-heading">
-        <p>CHOOSE YOUR CLASS</p>
+      <!-- =====================================================
+             STATS
+        ====================================================== -->
 
-        <h2>Select Your Class</h2>
-      </div>
+      <section class="stats-section">
+        <div class="stats-container">
+          <div class="stat-item">
+            <strong> 2 </strong>
 
-      <div class="class-container">
-        <div class="class-card">
-          <div class="class-number">11</div>
+            <span> Classes </span>
+          </div>
 
-          <h3>Class 11</h3>
+          <div class="stat-divider"></div>
+
+          <div class="stat-item">
+            <strong> 5 </strong>
+
+            <span> Science Subjects </span>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-item">
+            <strong> 50+ </strong>
+
+            <span> Chapters </span>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-item">
+            <strong> 24/7 </strong>
+
+            <span> Access </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+             CLASSES
+        ====================================================== -->
+
+      <section class="classes-section" id="classes">
+        <div class="content-container">
+          <div class="section-header">
+            <div>
+              <span class="section-label"> ACADEMIC PROGRAM </span>
+
+              <h2>Choose Your Class</h2>
+
+              <p>
+                Select your class to explore subjects, chapters and study
+                materials.
+              </p>
+            </div>
+          </div>
+
+          <div class="class-grid">
+            <!-- Class 11 -->
+            <article class="class-card class-card-dark">
+              <div class="class-card-top">
+                <span class="class-number"> 11 </span>
+
+                <span class="class-tag"> CBSE </span>
+              </div>
+
+              <div class="class-card-content">
+                <span class="class-label"> SENIOR SECONDARY </span>
+
+                <h3>Class 11</h3>
+
+                <p>
+                  Explore the foundation of your CBSE Science curriculum with
+                  organized chapters and resources.
+                </p>
+              </div>
+
+              <a href="class.html?class=11" class="class-card-btn">
+                Explore Class 11
+                <span>→</span>
+              </a>
+            </article>
+
+            <!-- Class 12 -->
+            <article class="class-card">
+              <div class="class-card-top">
+                <span class="class-number"> 12 </span>
+
+                <span class="class-tag"> CBSE </span>
+              </div>
+
+              <div class="class-card-content">
+                <span class="class-label"> SENIOR SECONDARY </span>
+
+                <h3>Class 12</h3>
+
+                <p>
+                  Prepare for board examinations with structured chapters, notes
+                  and important study resources.
+                </p>
+              </div>
+
+              <a href="class.html?class=12" class="class-card-btn">
+                Explore Class 12
+                <span>→</span>
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+             SUBJECTS
+        ====================================================== -->
+
+      <section class="subjects-section" id="subjects">
+        <div class="content-container">
+          <div class="section-header centered">
+            <span class="section-label"> SCIENCE CURRICULUM </span>
+
+            <h2>Explore Subjects</h2>
+
+            <p>
+              Find your subject and explore its chapters and available study
+              materials.
+            </p>
+          </div>
+
+          <div class="subject-grid">
+            <!-- Physics -->
+            <div class="subject-card">
+              <div class="subject-number">01</div>
+
+              <div class="subject-icon">⚛</div>
+
+              <h3>Physics</h3>
+
+              <p>Mechanics, electricity, optics, modern physics and more.</p>
+
+              <span class="subject-arrow"> Explore → </span>
+            </div>
+
+            <!-- Chemistry -->
+            <div class="subject-card">
+              <div class="subject-number">02</div>
+
+              <div class="subject-icon">◈</div>
+
+              <h3>Chemistry</h3>
+
+              <p>Physical, organic and inorganic chemistry concepts.</p>
+
+              <span class="subject-arrow"> Explore → </span>
+            </div>
+
+            <!-- Mathematics -->
+            <div class="subject-card">
+              <div class="subject-number">03</div>
+
+              <div class="subject-icon">∑</div>
+
+              <h3>Mathematics</h3>
+
+              <p>Algebra, calculus, geometry, probability and more.</p>
+
+              <span class="subject-arrow"> Explore → </span>
+            </div>
+
+            <!-- Biology -->
+            <div class="subject-card">
+              <div class="subject-number">04</div>
+
+              <div class="subject-icon">♧</div>
+
+              <h3>Biology</h3>
+
+              <p>Botany, zoology, genetics, ecology and human biology.</p>
+
+              <span class="subject-arrow"> Explore → </span>
+            </div>
+
+            <!-- Computer Science -->
+            <div class="subject-card">
+              <div class="subject-number">05</div>
+
+              <div class="subject-icon">&lt;/&gt;</div>
+
+              <h3>Computer Science</h3>
+
+              <p>Programming, databases, networks and computing concepts.</p>
+
+              <span class="subject-arrow"> Explore → </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+             HOW IT WORKS
+        ====================================================== -->
+
+      <section class="how-section">
+        <div class="content-container">
+          <div class="section-header centered">
+            <span class="section-label"> SIMPLE LEARNING </span>
+
+            <h2>Everything You Need in One Place</h2>
+
+            <p>Find the right learning resource in just a few simple steps.</p>
+          </div>
+
+          <div class="steps-grid">
+            <div class="step-card">
+              <span class="step-number"> 01 </span>
+
+              <div class="step-icon">01</div>
+
+              <h3>Choose Your Class</h3>
+
+              <p>Select Class 11 or Class 12 to begin exploring.</p>
+            </div>
+
+            <div class="step-line"></div>
+
+            <div class="step-card">
+              <span class="step-number"> 02 </span>
+
+              <div class="step-icon">02</div>
+
+              <h3>Select a Subject</h3>
+
+              <p>Choose Physics, Chemistry, Mathematics, Biology or CS.</p>
+            </div>
+
+            <div class="step-line"></div>
+
+            <div class="step-card">
+              <span class="step-number"> 03 </span>
+
+              <div class="step-icon">03</div>
+
+              <h3>Open a Chapter</h3>
+
+              <p>Browse chapters and find the topic you need.</p>
+            </div>
+
+            <div class="step-line"></div>
+
+            <div class="step-card">
+              <span class="step-number"> 04 </span>
+
+              <div class="step-icon">✓</div>
+
+              <h3>Study</h3>
+
+              <p>Access notes and resources uploaded by faculty.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+             ABOUT
+        ====================================================== -->
+
+      <section class="about-section" id="about">
+        <div class="content-container">
+          <div class="about-card">
+            <div class="about-content">
+              <span class="section-label"> ABOUT THE PORTAL </span>
+
+              <h2>A Simpler Way to Access Science Resources.</h2>
+
+              <p>
+                CBSE Science Portal is designed to make academic resources
+                easier to find and access for Class 11 and Class 12 Science
+                students.
+              </p>
+
+              <p>
+                Faculty members can upload notes, assignments, important
+                questions and other study resources, while students can access
+                them without creating an account.
+              </p>
+
+              <a href="#classes" class="about-btn">
+                Explore Classes
+                <span>→</span>
+              </a>
+            </div>
+
+            <div class="about-side">
+              <div class="about-stat">
+                <strong> 01 </strong>
+
+                <span>
+                  Organized
+                  <br />
+                  Learning
+                </span>
+              </div>
+
+              <div class="about-stat">
+                <strong> 02 </strong>
+
+                <span>
+                  Easy
+                  <br />
+                  Access
+                </span>
+              </div>
+
+              <div class="about-stat">
+                <strong> 03 </strong>
+
+                <span>
+                  Faculty
+                  <br />
+                  Resources
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <a href="index.html" class="site-logo footer-logo">
+            <span class="logo-mark"> CB </span>
+
+            <span class="logo-text">
+              <strong>CBSE</strong>
+              <small>Science Portal</small>
+            </span>
+          </a>
 
           <p>
-            Explore Physics, Chemistry, Mathematics, Biology and other study
-            materials.
+            A simple and organized learning portal for CBSE Class 11 &amp; 12
+            Science students.
           </p>
-
-          <a href="class.html?class=11" class="class-btn">
-            Explore Class 11 →
-          </a>
         </div>
 
-        <div class="class-card">
-          <div class="class-number">12</div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Portal</h4>
 
-          <h3>Class 12</h3>
+            <a href="index.html"> Home </a>
 
-          <p>Access chapter notes, important questions and study resources.</p>
+            <a href="#classes"> Classes </a>
 
-          <a href="class.html?class=12" class="class-btn">
-            Explore Class 12 →
-          </a>
-        </div>
-      </div>
-    </section>
+            <a href="#subjects"> Subjects </a>
+          </div>
 
-    <!-- Subjects -->
-    <section id="subjects" class="section subjects-section">
-      <div class="section-heading">
-        <p>SCIENCE STREAM</p>
+          <div class="footer-column">
+            <h4>Access</h4>
 
-        <h2>Subjects</h2>
-      </div>
+            <a href="login.html"> Faculty Login </a>
 
-      <div class="subjects-container">
-        <div class="subject-card">
-          <div class="subject-icon">⚛️</div>
-          <h3>Physics</h3>
-          <p>Notes & Study Materials</p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">🧪</div>
-          <h3>Chemistry</h3>
-          <p>Notes & Study Materials</p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">📐</div>
-          <h3>Mathematics</h3>
-          <p>Notes & Study Materials</p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">🧬</div>
-          <h3>Biology</h3>
-          <p>Notes & Study Materials</p>
+            <a href="#about"> About </a>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- About -->
-    <section id="about" class="about-section">
-      <div>
-        <p class="small-title">ABOUT THE PORTAL</p>
+      <div class="footer-bottom">
+        <span> © 2026 CBSE Science Portal </span>
 
-        <h2>Everything students need, in one place.</h2>
-
-        <p>
-          The CBSE Science Portal provides students with easy access to subject
-          notes, chapter materials, important questions and other learning
-          resources.
-        </p>
+        <span> Academic Resource Platform </span>
       </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-      <h3>CBSE Science Portal</h3>
-
-      <p>Class 11 & 12 Science Learning Resources</p>
-
-      <p>© 2026 CBSE Science Portal</p>
     </footer>
 
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
     <script src="js/app.js"></script>
-    <script type="module" src="js/firebase.js"></script>
+
+    <script>
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+      const mobileNav = document.getElementById('mobileNav');
+
+      if (mobileMenuBtn && mobileNav) {
+        mobileMenuBtn.addEventListener('click', function () {
+          const isOpen = mobileNav.classList.toggle('open');
+
+          mobileMenuBtn.classList.toggle('open', isOpen);
+
+          mobileMenuBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        mobileNav.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            mobileNav.classList.remove('open');
+
+            mobileMenuBtn.classList.remove('open');
+
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+    </script>
   </body>
 </html>

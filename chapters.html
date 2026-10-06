@@ -2,63 +2,153 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Chapters | CBSE Science Portal</title>
 
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/class.css" />
+    <link rel="stylesheet" href="css/chapters.css" />
   </head>
 
   <body>
-    <!-- HEADER -->
+    <!-- ================================
+         HEADER
+    ================================= -->
 
-    <header class="header">
-      <div class="logo">CBSE <span>Science Portal</span></div>
+    <header class="portal-header">
+      <div class="header-container">
+        <a href="index.html" class="portal-logo">
+          <span class="logo-box">CB</span>
 
-      <nav>
-        <a href="index.html"> Home </a>
+          <span class="logo-name">
+            <strong>CBSE</strong>
+            <span>Science Portal</span>
+          </span>
+        </a>
 
-        <a href="index.html#classes"> Classes </a>
+        <nav class="portal-navigation">
+          <a href="index.html"> Home </a>
 
-        <a href="index.html#about"> About </a>
+          <a href="index.html#classes" class="active"> Classes </a>
 
-        <a href="login.html" class="login-btn"> Faculty Login </a>
-      </nav>
+          <a href="index.html#subjects"> Subjects </a>
+
+          <a href="index.html#about"> About </a>
+
+          <a href="login.html" class="faculty-login"> Faculty Login </a>
+        </nav>
+      </div>
     </header>
 
-    <!-- CHAPTER HEADER -->
+    <!-- ================================
+         PAGE HEADER
+    ================================= -->
 
-    <section class="class-hero">
-      <p class="small-title">CBSE SCIENCE</p>
+    <section class="chapters-header">
+      <div class="chapters-container">
+        <!-- Breadcrumb -->
 
-      <h1 id="pageTitle">Chapters</h1>
+        <div class="chapters-breadcrumb">
+          <a href="index.html"> Home </a>
 
-      <p id="pageDescription">Select a chapter to explore study materials.</p>
-    </section>
+          <span>/</span>
 
-    <!-- CHAPTER SECTION -->
+          <a id="classBreadcrumbLink" href="#"> Class </a>
 
-    <section class="subjects-page">
-      <div class="section-heading">
-        <p>CHAPTERS</p>
+          <span>/</span>
 
-        <h2 id="subjectTitle">Physics</h2>
+          <strong id="subjectBreadcrumb"> Physics </strong>
+        </div>
+
+        <!-- Heading -->
+
+        <div class="chapters-heading">
+          <span class="page-label"> CBSE SCIENCE PORTAL </span>
+
+          <h1 id="subjectTitle">Physics</h1>
+
+          <p id="pageDescription">
+            Explore chapters and study resources for your class.
+          </p>
+        </div>
       </div>
-
-      <div id="chapterContainer" class="chapter-grid"></div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
 
-    <footer>
-      <h3>CBSE Science Portal</h3>
+    <main class="chapters-main">
+      <div class="chapters-container">
+        <!-- Section heading -->
 
-      <p>Class 11 & 12 Science Learning Resources</p>
+        <div class="chapters-section-heading">
+          <div>
+            <span class="section-label"> COURSE CONTENT </span>
 
-      <p>© 2026 CBSE Science Portal</p>
+            <h2>Chapters</h2>
+          </div>
+
+          <p>
+            Select a chapter to view available study materials and resources.
+          </p>
+        </div>
+
+        <!-- Chapter cards -->
+
+        <div id="chapterContainer" class="chapter-grid"></div>
+
+        <!-- Study note -->
+
+        <div class="chapters-note">
+          <strong> Study tip </strong>
+
+          <span>
+            Start with your chapter notes and then review important questions
+            and other learning resources.
+          </span>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================================
+         FOOTER
+    ================================= -->
+
+    <footer class="portal-footer">
+      <div class="chapters-container">
+        <div class="footer-top">
+          <div>
+            <a href="index.html" class="footer-logo"> CBSE Science Portal </a>
+
+            <p>
+              A learning resource platform for CBSE Class 11 & 12 Science
+              students.
+            </p>
+          </div>
+
+          <div class="footer-navigation">
+            <a href="index.html"> Home </a>
+
+            <a href="index.html#classes"> Classes </a>
+
+            <a href="index.html#subjects"> Subjects </a>
+
+            <a href="login.html"> Faculty Login </a>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span> © 2026 CBSE Science Portal </span>
+
+          <span> Academic Learning Platform </span>
+        </div>
+      </div>
     </footer>
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
 
     <script src="js/chapters.js"></script>
   </body>

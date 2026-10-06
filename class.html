@@ -2,159 +2,290 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Class | CBSE Science Portal</title>
 
-    <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css" />
-
-    <!-- Class Page CSS -->
     <link rel="stylesheet" href="css/class.css" />
   </head>
 
   <body>
-    <!-- =========================
-         HEADER
-    ========================== -->
+    <!-- ================= HEADER ================= -->
 
-    <header class="header">
-      <div class="logo">CBSE <span>Science Portal</span></div>
+    <header class="portal-header">
+      <div class="header-container">
+        <a href="index.html" class="portal-logo">
+          <span class="logo-box">CB</span>
 
-      <nav>
-        <a href="index.html"> Home </a>
+          <span class="logo-name">
+            <strong>CBSE</strong>
+            <span>Science Portal</span>
+          </span>
+        </a>
 
-        <a href="index.html#classes"> Classes </a>
+        <nav class="portal-navigation">
+          <a href="index.html">Home</a>
 
-        <a href="index.html#about"> About </a>
+          <a href="index.html#classes" class="active"> Classes </a>
 
-        <a href="login.html" class="login-btn"> Faculty Login </a>
-      </nav>
+          <a href="index.html#subjects"> Subjects </a>
+
+          <a href="index.html#about"> About </a>
+
+          <a href="login.html" class="faculty-login"> Faculty Login </a>
+        </nav>
+      </div>
     </header>
 
-    <!-- =========================
-         CLASS HERO
-    ========================== -->
+    <!-- ================= PAGE HEADER ================= -->
 
-    <section class="class-hero">
-      <p class="small-title">CBSE SCIENCE</p>
+    <section class="class-page-header">
+      <div class="class-container">
+        <div class="page-breadcrumb">
+          <a href="index.html">Home</a>
 
-      <h1 id="classTitle">Class 11</h1>
+          <span>/</span>
 
-      <p>Select a subject to explore chapters and study materials.</p>
-    </section>
+          <span>Classes</span>
 
-    <!-- =========================
-         SUBJECTS
-    ========================== -->
+          <span>/</span>
 
-    <section class="subjects-page">
-      <div class="section-heading">
-        <p>SELECT SUBJECT</p>
-
-        <h2>Science Subjects</h2>
-      </div>
-
-      <div class="subject-grid">
-        <!-- =========================
-             PHYSICS
-        ========================== -->
-
-        <div class="subject-page-card">
-          <div class="subject-icon">⚛️</div>
-
-          <h3>Physics</h3>
-
-          <p>Physics notes, chapters, questions and study materials.</p>
-
-          <a href="#" class="subject-link" data-subject="physics">
-            Explore Physics →
-          </a>
+          <strong id="classBreadcrumb">Class 11</strong>
         </div>
 
-        <!-- =========================
-             CHEMISTRY
-        ========================== -->
+        <div class="class-heading">
+          <span class="page-label"> CBSE SCIENCE PORTAL </span>
 
-        <div class="subject-page-card">
-          <div class="subject-icon">🧪</div>
+          <h1 id="classTitle">Class 11</h1>
 
-          <h3>Chemistry</h3>
-
-          <p>Chemistry notes, chapters, questions and study materials.</p>
-
-          <a href="#" class="subject-link" data-subject="chemistry">
-            Explore Chemistry →
-          </a>
-        </div>
-
-        <!-- =========================
-             MATHEMATICS
-        ========================== -->
-
-        <div class="subject-page-card">
-          <div class="subject-icon">📐</div>
-
-          <h3>Mathematics</h3>
-
-          <p>Mathematics notes, chapters, questions and study materials.</p>
-
-          <a href="#" class="subject-link" data-subject="mathematics">
-            Explore Mathematics →
-          </a>
-        </div>
-
-        <!-- =========================
-             BIOLOGY
-        ========================== -->
-
-        <div class="subject-page-card">
-          <div class="subject-icon">🧬</div>
-
-          <h3>Biology</h3>
-
-          <p>Biology notes, chapters, questions and study materials.</p>
-
-          <a href="#" class="subject-link" data-subject="biology">
-            Explore Biology →
-          </a>
-        </div>
-
-        <!-- =========================
-             COMPUTER SCIENCE
-        ========================== -->
-
-        <div class="subject-page-card">
-          <div class="subject-icon">💻</div>
-
-          <h3>Computer Science</h3>
-
-          <p>Programming, theory and computer science resources.</p>
-
-          <a href="#" class="subject-link" data-subject="computer-science">
-            Explore Computer Science →
-          </a>
+          <p>
+            Access your subjects, chapters and study materials in one place.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    <!-- ================= MAIN CONTENT ================= -->
 
-    <footer>
-      <h3>CBSE Science Portal</h3>
+    <main class="class-main">
+      <div class="class-container">
+        <!-- Section heading -->
 
-      <p>Class 11 &amp; 12 Science Learning Resources</p>
+        <div class="content-heading">
+          <div>
+            <span class="section-label"> ACADEMIC SUBJECTS </span>
 
-      <p>© 2026 CBSE Science Portal</p>
+            <h2>Select a Subject</h2>
+          </div>
+
+          <p>
+            Choose a subject to view its chapters and available learning
+            resources.
+          </p>
+        </div>
+
+        <!-- ================= SUBJECTS ================= -->
+
+        <div class="subject-list">
+          <!-- Physics -->
+
+          <a href="#" class="subject-link subject-card" data-subject="physics">
+            <div class="subject-index">01</div>
+
+            <div class="subject-main">
+              <div class="subject-title-row">
+                <h3>Physics</h3>
+
+                <span class="subject-arrow"> → </span>
+              </div>
+
+              <p>
+                Mechanics, electricity, waves, thermodynamics and other core
+                concepts.
+              </p>
+
+              <span class="subject-action"> View Chapters </span>
+            </div>
+          </a>
+
+          <!-- Chemistry -->
+
+          <a
+            href="#"
+            class="subject-link subject-card"
+            data-subject="chemistry"
+          >
+            <div class="subject-index">02</div>
+
+            <div class="subject-main">
+              <div class="subject-title-row">
+                <h3>Chemistry</h3>
+
+                <span class="subject-arrow"> → </span>
+              </div>
+
+              <p>
+                Physical, organic and inorganic chemistry concepts and important
+                topics.
+              </p>
+
+              <span class="subject-action"> View Chapters </span>
+            </div>
+          </a>
+
+          <!-- Mathematics -->
+
+          <a
+            href="#"
+            class="subject-link subject-card"
+            data-subject="mathematics"
+          >
+            <div class="subject-index">03</div>
+
+            <div class="subject-main">
+              <div class="subject-title-row">
+                <h3>Mathematics</h3>
+
+                <span class="subject-arrow"> → </span>
+              </div>
+
+              <p>
+                Algebra, calculus, coordinate geometry, probability and
+                mathematical concepts.
+              </p>
+
+              <span class="subject-action"> View Chapters </span>
+            </div>
+          </a>
+
+          <!-- Biology -->
+
+          <a href="#" class="subject-link subject-card" data-subject="biology">
+            <div class="subject-index">04</div>
+
+            <div class="subject-main">
+              <div class="subject-title-row">
+                <h3>Biology</h3>
+
+                <span class="subject-arrow"> → </span>
+              </div>
+
+              <p>
+                Cell biology, physiology, genetics, ecology and life science
+                topics.
+              </p>
+
+              <span class="subject-action"> View Chapters </span>
+            </div>
+          </a>
+
+          <!-- Computer Science -->
+
+          <a
+            href="#"
+            class="subject-link subject-card"
+            data-subject="computer-science"
+          >
+            <div class="subject-index">05</div>
+
+            <div class="subject-main">
+              <div class="subject-title-row">
+                <h3>Computer Science</h3>
+
+                <span class="subject-arrow"> → </span>
+              </div>
+
+              <p>
+                Programming, data representation, databases and computing
+                concepts.
+              </p>
+
+              <span class="subject-action"> View Chapters </span>
+            </div>
+          </a>
+        </div>
+
+        <!-- ================= INFORMATION ================= -->
+
+        <section class="class-information">
+          <div class="information-content">
+            <span class="section-label"> HOW IT WORKS </span>
+
+            <h2>From Subject to Study Material</h2>
+
+            <p>
+              Select a subject, choose a chapter and explore the study resources
+              uploaded by faculty.
+            </p>
+          </div>
+
+          <div class="learning-path">
+            <div class="path-item">
+              <span class="path-number"> 01 </span>
+
+              <strong> Subject </strong>
+
+              <small> Choose your subject </small>
+            </div>
+
+            <div class="path-line"></div>
+
+            <div class="path-item">
+              <span class="path-number"> 02 </span>
+
+              <strong> Chapter </strong>
+
+              <small> Select a chapter </small>
+            </div>
+
+            <div class="path-line"></div>
+
+            <div class="path-item">
+              <span class="path-number"> 03 </span>
+
+              <strong> Materials </strong>
+
+              <small> Study & learn </small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="portal-footer">
+      <div class="class-container">
+        <div class="footer-top">
+          <div>
+            <a href="index.html" class="footer-logo"> CBSE Science Portal </a>
+
+            <p>
+              A learning resource platform for CBSE Class 11 & 12 Science
+              students.
+            </p>
+          </div>
+
+          <div class="footer-navigation">
+            <a href="index.html"> Home </a>
+
+            <a href="index.html#classes"> Classes </a>
+
+            <a href="index.html#subjects"> Subjects </a>
+
+            <a href="login.html"> Faculty Login </a>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span> © 2026 CBSE Science Portal </span>
+
+          <span> Academic Learning Platform </span>
+        </div>
+      </div>
     </footer>
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
-
-    <script src="js/class.js"></script>
+    <script type="module" src="js/class.js"></script>
   </body>
 </html>

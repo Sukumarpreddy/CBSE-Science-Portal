@@ -2,14 +2,12 @@ import {
   getFirestore,
   collection,
   getDocs,
-  deleteDoc,
-  updateDoc,
-  doc,
 } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
 
 import {
   getAuth,
   onAuthStateChanged,
+  signOut,
 } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js';
 
 import { app } from './firebase.js';
@@ -17,338 +15,263 @@ import { app } from './firebase.js';
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const container = document.getElementById('facultyMaterialContainer');
+const facultyEmail = document.getElementById('facultyEmail');
 
-let currentUser = null;
+const totalMaterials = document.getElementById('totalMaterials');
 
-/* ============================= */
-/* AUTHENTICATION */
-/* ============================= */
+const totalClasses = document.getElementById('totalClasses');
 
-onAuthStateChanged(auth, function (user) {
+const totalSubjects = document.getElementById('totalSubjects');
+
+const recentUploads = document.getElementById('recentUploads');
+
+const materialsList = document.getElementById('materialsList');
+
+const logoutBtn = document.getElementById('logoutBtn');
+
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = 'login.html';
     return;
   }
 
-  currentUser = user;
+  console.log('Faculty dashboard:', user.email);
 
-  console.log('Faculty dashboard:', currentUser.email);
+  if (facultyEmail) {
+    facultyEmail.textContent = user.email;
+  }
 
-  loadMaterials();
+  await loadDashboard(user.uid);
 });
 
-/* ============================= */
-/* LOAD MATERIALS */
-/* ============================= */
-
-async function loadMaterials() {
-  container.innerHTML =
-    "<div class='loading-materials'>Loading materials...</div>";
-
+async function loadDashboard(uid) {
   try {
     const snapshot = await getDocs(collection(db, 'materials'));
 
     const materials = [];
 
-    snapshot.forEach(function (document) {
-      materials.push({
-        id: document.id,
-        ...document.data(),
-      });
+    snapshot.forEach((document) => {
+      const material = document.data();
+
+      if (material.uploadedByUid === uid) {
+        materials.push({
+          id: document.id,
+          ...material,
+        });
+      }
     });
 
-    displayMaterials(materials);
+    console.log('Faculty materials:', materials);
+
+    updateStatistics(materials);
+
+    displayRecentMaterials(materials);
   } catch (error) {
-    console.error('Error loading materials:', error);
+    console.error('Dashboard loading error:', error);
 
-    container.innerHTML = `
-            <div class="no-materials">
+    if (materialsList) {
+      materialsList.innerHTML = `
 
-                <h3>Unable to load materials</h3>
+                <div class="no-materials">
 
-                <p>
-                    Please try again later.
-                </p>
+                    <h3>
+                        Unable to load materials
+                    </h3>
 
-            </div>
-        `;
+                    <p>
+                        Please try again later.
+                    </p>
+
+                </div>
+
+            `;
+    }
   }
 }
 
-/* ============================= */
-/* DISPLAY MATERIALS */
-/* ============================= */
+function updateStatistics(materials) {
+  if (totalMaterials) {
+    totalMaterials.textContent = materials.length;
+  }
 
-function displayMaterials(materials) {
+  const classes = new Set();
+  const subjects = new Set();
+
+  materials.forEach((material) => {
+    if (material.class) {
+      classes.add(String(material.class));
+    }
+
+    if (material.subject) {
+      subjects.add(String(material.subject));
+    }
+  });
+
+  if (totalClasses) {
+    totalClasses.textContent = classes.size;
+  }
+
+  if (totalSubjects) {
+    totalSubjects.textContent = subjects.size;
+  }
+
+  if (recentUploads) {
+    recentUploads.textContent = Math.min(materials.length, 5);
+  }
+}
+
+function displayRecentMaterials(materials) {
+  if (!materialsList) {
+    return;
+  }
+
   if (materials.length === 0) {
-    container.innerHTML = `
+    materialsList.innerHTML = `
+
             <div class="no-materials">
 
-                <h3>No materials uploaded yet</h3>
+                <h3>
+                    No materials uploaded yet
+                </h3>
 
                 <p>
-                    Start by uploading your first
-                    study material.
+                    Start by uploading your first study material.
                 </p>
 
+                <a
+                    href="faculty-materials.html"
+                    class="dashboard-upload-link"
+                >
+                    Upload Material
+                </a>
+
             </div>
+
         `;
 
     return;
   }
 
-  container.innerHTML = '';
+  const sortedMaterials = [...materials].sort((a, b) => {
+    const timeA = a.uploadedAt?.seconds || 0;
 
-  materials.forEach(function (material) {
-    const card = document.createElement('div');
+    const timeB = b.uploadedAt?.seconds || 0;
 
-    card.className = 'faculty-material-card';
+    return timeB - timeA;
+  });
 
-    card.innerHTML = `
+  const recentMaterials = sortedMaterials.slice(0, 5);
 
-            <div class="material-icon">
+  materialsList.innerHTML = recentMaterials.map(createMaterialCard).join('');
+}
+
+function createMaterialCard(material) {
+  const title = escapeHTML(material.title || 'Untitled Material');
+
+  const subject = formatSubject(material.subject);
+
+  const className = material.class
+    ? `Class ${escapeHTML(String(material.class))}`
+    : 'Class';
+
+  const chapter = material.chapterName
+    ? escapeHTML(material.chapterName)
+    : material.chapter
+      ? `Chapter ${escapeHTML(String(material.chapter))}`
+      : 'Chapter';
+
+  const type = escapeHTML(material.type || 'Study Material');
+
+  const resourceURL = material.resourceURL || material.fileURL || '#';
+
+  return `
+
+        <div class="dashboard-material-card">
+
+            <div class="dashboard-material-icon">
                 📚
             </div>
 
-            <h3>
-                ${material.title || 'Untitled Material'}
-            </h3>
+            <div class="dashboard-material-info">
 
-            <p>
-                Class ${material.class || '-'}
-                •
-                ${material.subject || '-'}
-            </p>
+                <h3>
+                    ${title}
+                </h3>
 
-            <p>
-                ${material.chapter || 'Chapter not specified'}
-            </p>
+                <p>
+                    ${className}
+                    •
+                    ${escapeHTML(subject)}
+                </p>
 
-            <span class="material-type">
-                ${material.type || 'Material'}
-            </span>
+                <span>
+                    ${chapter}
+                </span>
 
-            <div class="material-actions">
+            </div>
+
+            <div class="dashboard-material-meta">
+
+                <span class="dashboard-material-type">
+                    ${type}
+                </span>
 
                 <a
-                    href="${material.resourceURL || '#'}"
+                    href="${escapeAttribute(resourceURL)}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="view-btn"
                 >
                     View
                 </a>
 
-                <button
-                    class="edit-btn"
-                    data-id="${material.id}"
-                >
-                    Edit
-                </button>
-
-                <button
-                    class="delete-btn"
-                    data-id="${material.id}"
-                >
-                    Delete
-                </button>
-
             </div>
-        `;
 
-    container.appendChild(card);
-  });
+        </div>
 
-  addMaterialEvents();
+    `;
 }
 
-/* ============================= */
-/* BUTTON EVENTS */
-/* ============================= */
+function formatSubject(subject) {
+  const subjects = {
+    physics: 'Physics',
 
-function addMaterialEvents() {
-  const editButtons = document.querySelectorAll('.edit-btn');
+    chemistry: 'Chemistry',
 
-  editButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-      const materialId = this.dataset.id;
+    mathematics: 'Mathematics',
 
-      openEditModal(materialId);
-    });
-  });
+    biology: 'Biology',
 
-  const deleteButtons = document.querySelectorAll('.delete-btn');
-
-  deleteButtons.forEach(function (button) {
-    button.addEventListener('click', async function () {
-      const materialId = this.dataset.id;
-
-      const confirmed = confirm(
-        'Are you sure you want to delete this material?',
-      );
-
-      if (!confirmed) return;
-
-      try {
-        await deleteDoc(doc(db, 'materials', materialId));
-
-        alert('Material deleted successfully.');
-
-        loadMaterials();
-      } catch (error) {
-        console.error('Delete error:', error);
-
-        alert('Unable to delete material.');
-      }
-    });
-  });
-}
-
-/* ============================= */
-/* EDIT MODAL */
-/* ============================= */
-
-const editModal = document.getElementById('editModal');
-
-const editForm = document.getElementById('editMaterialForm');
-
-const closeEditModal = document.getElementById('closeEditModal');
-
-const cancelEdit = document.getElementById('cancelEdit');
-
-const editMessage = document.getElementById('editMessage');
-
-let editingMaterialId = null;
-
-/* ============================= */
-/* OPEN EDIT MODAL */
-/* ============================= */
-
-async function openEditModal(materialId) {
-  try {
-    const snapshot = await getDocs(collection(db, 'materials'));
-
-    let selectedMaterial = null;
-
-    snapshot.forEach(function (document) {
-      if (document.id === materialId) {
-        selectedMaterial = {
-          id: document.id,
-          ...document.data(),
-        };
-      }
-    });
-
-    if (!selectedMaterial) {
-      alert('Material not found.');
-
-      return;
-    }
-
-    editingMaterialId = materialId;
-
-    document.getElementById('editMaterialId').value = materialId;
-
-    document.getElementById('editClass').value = selectedMaterial.class || '11';
-
-    document.getElementById('editSubject').value =
-      selectedMaterial.subject || 'physics';
-
-    document.getElementById('editChapter').value =
-      selectedMaterial.chapter || '';
-
-    document.getElementById('editTitle').value = selectedMaterial.title || '';
-
-    document.getElementById('editType').value =
-      selectedMaterial.type || 'notes';
-
-    document.getElementById('editURL').value =
-      selectedMaterial.resourceURL || '';
-
-    document.getElementById('editDescription').value =
-      selectedMaterial.description || '';
-
-    editMessage.textContent = '';
-
-    editModal.classList.add('active');
-  } catch (error) {
-    console.error('Error opening edit:', error);
-
-    alert('Unable to open material.');
-  }
-}
-
-/* ============================= */
-/* CLOSE MODAL */
-/* ============================= */
-
-function closeModal() {
-  editModal.classList.remove('active');
-
-  editingMaterialId = null;
-
-  editForm.reset();
-
-  editMessage.textContent = '';
-}
-
-closeEditModal.addEventListener('click', closeModal);
-
-cancelEdit.addEventListener('click', closeModal);
-
-/* ============================= */
-/* SAVE EDIT */
-/* ============================= */
-
-editForm.addEventListener('submit', async function (event) {
-  event.preventDefault();
-
-  if (!editingMaterialId) {
-    return;
-  }
-
-  const updatedMaterial = {
-    class: document.getElementById('editClass').value,
-
-    subject: document.getElementById('editSubject').value,
-
-    chapter: document.getElementById('editChapter').value.trim(),
-
-    title: document.getElementById('editTitle').value.trim(),
-
-    type: document.getElementById('editType').value,
-
-    resourceURL: document.getElementById('editURL').value.trim(),
-
-    description: document.getElementById('editDescription').value.trim(),
+    'computer-science': 'Computer Science',
   };
 
-  if (
-    !updatedMaterial.chapter ||
-    !updatedMaterial.title ||
-    !updatedMaterial.resourceURL
-  ) {
-    editMessage.textContent = 'Please fill all required fields.';
+  return subjects[subject] || subject || 'Subject';
+}
 
-    return;
-  }
+function escapeHTML(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
 
-  editMessage.textContent = 'Saving changes...';
+    .replaceAll('<', '&lt;')
 
-  try {
-    await updateDoc(doc(db, 'materials', editingMaterialId), updatedMaterial);
+    .replaceAll('>', '&gt;')
 
-    editMessage.textContent = 'Material updated successfully.';
+    .replaceAll('"', '&quot;')
 
-    setTimeout(function () {
-      closeModal();
+    .replaceAll("'", '&#039;');
+}
 
-      loadMaterials();
-    }, 700);
-  } catch (error) {
-    console.error('Update error:', error);
+function escapeAttribute(value) {
+  return escapeHTML(value);
+}
 
-    editMessage.textContent = 'Unable to update material.';
-  }
-});
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+
+      window.location.href = 'login.html';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  });
+}

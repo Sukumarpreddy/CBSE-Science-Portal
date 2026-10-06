@@ -4,8 +4,6 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  getDoc,
-  updateDoc,
 } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
 
 import {
@@ -19,336 +17,727 @@ import { app } from './firebase.js';
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const container = document.getElementById('adminMaterialContainer');
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
 
-const resultCount = document.getElementById('materialCountText');
+const totalMaterials = document.getElementById('totalMaterials');
+const class11Count = document.getElementById('class11Count');
+const class12Count = document.getElementById('class12Count');
+const subjectCount = document.getElementById('subjectCount');
 
 const searchInput = document.getElementById('searchInput');
-
 const classFilter = document.getElementById('classFilter');
-
 const subjectFilter = document.getElementById('subjectFilter');
+const typeFilter = document.getElementById('typeFilter');
+
+const materialsContainer = document.getElementById('materialsContainer');
+
+const resultCount = document.getElementById('resultCount');
+
+const emptyState = document.getElementById('emptyState');
+
+const errorState = document.getElementById('errorState');
+
+const errorMessage = document.getElementById('errorMessage');
+
+const retryBtn = document.getElementById('retryBtn');
 
 const logoutBtn = document.getElementById('logoutBtn');
 
+const adminEmail = document.getElementById('adminEmail');
+
+const profileAvatar = document.getElementById('profileAvatar');
+
+/* =========================================================
+   DATA
+========================================================= */
+
 let allMaterials = [];
+let allUsers = [];
 
-/* ============================= */
-/* ADMIN AUTH CHECK */
-/* ============================= */
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
 
-onAuthStateChanged(auth, async function (user) {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = 'login.html';
-
     return;
   }
 
   try {
-    const userRef = doc(db, 'users', user.uid);
-
-    const userSnapshot = await getDoc(userRef);
-
-    if (!userSnapshot.exists() || userSnapshot.data().role !== 'admin') {
-      alert('Access denied. Admin account required.');
-
-      window.location.href = 'faculty-dashboard.html';
-
-      return;
+    if (adminEmail) {
+      adminEmail.textContent = user.email || 'Administrator';
     }
 
-    loadMaterials();
-  } catch (error) {
-    console.error('Admin verification error:', error);
+    if (profileAvatar) {
+      profileAvatar.textContent = (user.email || 'A').charAt(0).toUpperCase();
+    }
 
-    alert('Unable to verify admin account.');
+    await loadMaterials();
+  } catch (error) {
+    console.error('Admin materials error:', error);
+
+    showError(error.message || 'Unable to load materials.');
   }
 });
 
-/* ============================= */
-/* LOAD MATERIALS */
-/* ============================= */
+/* =========================================================
+   LOAD MATERIALS
+========================================================= */
 
 async function loadMaterials() {
-  container.innerHTML = `
-        <div class="no-admin-materials">
-            Loading materials...
-        </div>
-    `;
+  hideStates();
+
+  showLoading();
 
   try {
-    const snapshot = await getDocs(collection(db, 'materials'));
+    console.log('Loading materials from Firestore...');
 
-    allMaterials = [];
+    /* -----------------------------------------
+       LOAD MATERIALS
+    ----------------------------------------- */
 
-    snapshot.forEach(function (document) {
-      allMaterials.push({
-        id: document.id,
+    const materialsSnapshot = await getDocs(collection(db, 'materials'));
 
-        ...document.data(),
-      });
+    console.log('Materials found:', materialsSnapshot.size);
+
+    allMaterials = materialsSnapshot.docs.map((materialDoc) => {
+      const data = materialDoc.data();
+
+      console.log('Material:', materialDoc.id, data);
+
+      return {
+        id: materialDoc.id,
+        ...data,
+      };
     });
 
-    applyFilters();
+    /* -----------------------------------------
+       LOAD USERS
+    ----------------------------------------- */
+
+    try {
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+
+      allUsers = usersSnapshot.docs.map((userDoc) => ({
+        id: userDoc.id,
+        ...userDoc.data(),
+      }));
+
+      console.log('Users found:', allUsers.length);
+    } catch (userError) {
+      console.warn('Could not load users:', userError);
+
+      allUsers = [];
+    }
+
+    /* -----------------------------------------
+       SORT MATERIALS
+    ----------------------------------------- */
+
+    allMaterials.sort((a, b) => {
+      const dateA = getTimestampValue(a.uploadedAt);
+
+      const dateB = getTimestampValue(b.uploadedAt);
+
+      return dateB - dateA;
+    });
+
+    /* -----------------------------------------
+       UPDATE UI
+    ----------------------------------------- */
+
+    updateStatistics();
+
+    populateSubjectFilter();
+
+    renderMaterials();
   } catch (error) {
-    console.error('Error loading materials:', error);
+    console.error('Firestore material loading failed:', error);
 
-    container.innerHTML = `
-            <div class="no-admin-materials">
-
-                <h3>
-                    Unable to load materials
-                </h3>
-
-                <p>
-                    Please try again.
-                </p>
-
-            </div>
-        `;
+    showError(error.message || 'Unable to load materials from Firebase.');
   }
 }
 
-/* ============================= */
-/* FILTERS */
-/* ============================= */
+/* =========================================================
+   TIMESTAMP HELPER
+========================================================= */
 
-function applyFilters() {
-  const search = searchInput.value.trim().toLowerCase();
+function getTimestampValue(timestamp) {
+  if (!timestamp) {
+    return 0;
+  }
 
-  const selectedClass = classFilter.value;
+  if (typeof timestamp.toMillis === 'function') {
+    return timestamp.toMillis();
+  }
 
-  const selectedSubject = subjectFilter.value;
+  if (timestamp.seconds !== undefined) {
+    return timestamp.seconds * 1000;
+  }
 
-  const filtered = allMaterials.filter(function (material) {
+  if (timestamp instanceof Date) {
+    return timestamp.getTime();
+  }
+
+  const parsed = new Date(timestamp).getTime();
+
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function updateStatistics() {
+  const materials = allMaterials;
+
+  const class11 = materials.filter(
+    (item) => normalizeClass(item.class) === '11',
+  ).length;
+
+  const class12 = materials.filter(
+    (item) => normalizeClass(item.class) === '12',
+  ).length;
+
+  const subjects = new Set(
+    materials.map((item) => normalizeSubject(item.subject)).filter(Boolean),
+  );
+
+  totalMaterials.textContent = materials.length;
+
+  class11Count.textContent = class11;
+
+  class12Count.textContent = class12;
+
+  subjectCount.textContent = subjects.size;
+}
+
+/* =========================================================
+   SUBJECT FILTER
+========================================================= */
+
+function populateSubjectFilter() {
+  if (!subjectFilter) {
+    return;
+  }
+
+  const subjects = [
+    ...new Set(
+      allMaterials
+        .map((item) => normalizeSubject(item.subject))
+        .filter(Boolean),
+    ),
+  ].sort();
+
+  subjectFilter.innerHTML = `
+    <option value="all">All Subjects</option>
+  `;
+
+  subjects.forEach((subject) => {
+    const option = document.createElement('option');
+
+    option.value = subject;
+
+    option.textContent = formatSubject(subject);
+
+    subjectFilter.appendChild(option);
+  });
+}
+
+/* =========================================================
+   RENDER MATERIALS
+========================================================= */
+
+function renderMaterials() {
+  const search = (searchInput?.value || '').trim().toLowerCase();
+
+  const selectedClass = classFilter?.value || 'all';
+
+  const selectedSubject = subjectFilter?.value || 'all';
+
+  const selectedType = typeFilter?.value || 'all';
+
+  const filtered = allMaterials.filter((material) => {
+    const materialClass = normalizeClass(material.class);
+
+    const subject = normalizeSubject(material.subject);
+
+    const type = normalizeType(material.type);
+
     const title = String(material.title || '').toLowerCase();
 
-    const description = String(material.description || '').toLowerCase();
+    const chapter = String(
+      material.chapterName || material.chapter || '',
+    ).toLowerCase();
 
-    const chapter = String(material.chapter || '').toLowerCase();
+    const uploader = String(
+      material.uploadedBy || getUploaderName(material) || '',
+    ).toLowerCase();
 
-    const matchesSearch =
+    const searchMatch =
       !search ||
       title.includes(search) ||
-      description.includes(search) ||
-      chapter.includes(search);
+      chapter.includes(search) ||
+      uploader.includes(search) ||
+      subject.includes(search) ||
+      type.includes(search);
 
-    const matchesClass =
-      selectedClass === 'all' || String(material.class || '') === selectedClass;
+    const classMatch =
+      selectedClass === 'all' || materialClass === selectedClass;
 
-    const matchesSubject =
-      selectedSubject === 'all' ||
-      String(material.subject || '').toLowerCase() === selectedSubject;
+    const subjectMatch =
+      selectedSubject === 'all' || subject === selectedSubject;
 
-    return matchesSearch && matchesClass && matchesSubject;
+    const typeMatch = selectedType === 'all' || type === selectedType;
+
+    return searchMatch && classMatch && subjectMatch && typeMatch;
   });
 
-  displayMaterials(filtered);
-}
+  console.log('Filtered materials:', filtered.length);
 
-/* ============================= */
-/* DISPLAY */
-/* ============================= */
+  resultCount.textContent = `${filtered.length} ${
+    filtered.length === 1 ? 'material' : 'materials'
+  }`;
 
-function displayMaterials(materials) {
-  resultCount.textContent = `${materials.length} material${
-    materials.length === 1 ? '' : 's'
-  } found`;
+  if (filtered.length === 0) {
+    materialsContainer.innerHTML = '';
 
-  if (materials.length === 0) {
-    container.innerHTML = `
-            <div class="no-admin-materials">
-
-                <h3>
-                    No materials found
-                </h3>
-
-                <p>
-                    Try changing your search or filters.
-                </p>
-
-            </div>
-        `;
+    showEmpty();
 
     return;
   }
 
-  container.innerHTML = '';
+  hideEmpty();
 
-  materials.forEach(function (material) {
-    const card = document.createElement('div');
+  hideError();
 
-    card.className = 'admin-material-card';
-
-    card.innerHTML = `
-
-                <div class="admin-material-icon">
-                    📚
-                </div>
-
-                <h3>
-                    ${material.title || 'Untitled Material'}
-                </h3>
-
-                <p>
-                    Class ${material.class || '-'}
-                    •
-                    ${material.subject || '-'}
-                </p>
-
-                <p>
-                    ${material.chapter || 'Chapter not specified'}
-                </p>
-
-                <span class="admin-material-type">
-                    ${material.type || 'Material'}
-                </span>
-
-                <p class="admin-material-uploader">
-                    Uploaded by:
-                    ${material.uploadedBy || 'Unknown'}
-                </p>
-
-                <div class="admin-material-actions">
-
-                    <a
-                        href="${material.resourceURL || '#'}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="admin-view-btn"
-                    >
-                        View
-                    </a>
-
-                    <button
-                        class="admin-edit-btn"
-                        data-id="${material.id}"
-                    >
-                        Edit
-                    </button>
-
-                    <button
-                        class="admin-delete-btn"
-                        data-id="${material.id}"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-            `;
-
-    container.appendChild(card);
-  });
-
-  addEvents();
+  materialsContainer.innerHTML = filtered.map(createMaterialRow).join('');
 }
 
-/* ============================= */
-/* EVENTS */
-/* ============================= */
+/* =========================================================
+   CREATE TABLE ROW
+========================================================= */
 
-function addEvents() {
-  const editButtons = document.querySelectorAll('.admin-edit-btn');
+function createMaterialRow(material) {
+  const title = escapeHTML(material.title || 'Untitled Material');
 
-  editButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-      const materialId = this.dataset.id;
+  const subject = normalizeSubject(material.subject);
 
-      editMaterial(materialId);
-    });
-  });
+  const subjectLabel = formatSubject(subject);
 
-  const deleteButtons = document.querySelectorAll('.admin-delete-btn');
+  const materialClass = normalizeClass(material.class);
 
-  deleteButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-      const materialId = this.dataset.id;
+  const chapter =
+    material.chapterName ||
+    (material.chapter ? `Chapter ${material.chapter}` : 'General');
 
-      deleteMaterial(materialId);
-    });
+  const type = normalizeType(material.type);
+
+  const typeLabel = formatType(type);
+
+  const uploader =
+    material.uploadedBy || getUploaderName(material) || 'Faculty';
+
+  const date = formatDate(material.uploadedAt);
+
+  const url = material.resourceURL || material.fileURL || material.url || '';
+
+  return `
+    <tr class="material-row">
+
+      <td>
+        <div class="material-info">
+
+          <div class="material-icon">
+            ${getMaterialIcon(type)}
+          </div>
+
+          <div class="material-details">
+
+            <strong>
+              ${title}
+            </strong>
+
+            <span>
+              ${escapeHTML(chapter)}
+            </span>
+
+          </div>
+
+        </div>
+      </td>
+
+
+      <td>
+        <span class="class-badge">
+          Class ${escapeHTML(materialClass || '-')}
+        </span>
+      </td>
+
+
+      <td>
+        <span class="subject-text">
+          ${escapeHTML(subjectLabel || '-')}
+        </span>
+      </td>
+
+
+      <td>
+        <span class="type-badge ${escapeHTML(type)}">
+          ${escapeHTML(typeLabel)}
+        </span>
+      </td>
+
+
+      <td>
+        <div class="uploader">
+          <div class="uploader-avatar">
+            ${escapeHTML(String(uploader).charAt(0).toUpperCase())}
+          </div>
+
+          <span>
+            ${escapeHTML(uploader)}
+          </span>
+        </div>
+      </td>
+
+
+      <td>
+        <span class="date-text">
+          ${escapeHTML(date)}
+        </span>
+      </td>
+
+
+      <td>
+        <div class="action-buttons">
+
+          ${
+            url
+              ? `
+                <a
+                  href="${escapeAttribute(url)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="action-btn view-btn"
+                  title="Open material"
+                >
+                  View
+                </a>
+              `
+              : `
+                <button
+                  type="button"
+                  class="action-btn disabled-btn"
+                  disabled
+                  title="No resource URL"
+                >
+                  No File
+                </button>
+              `
+          }
+
+
+          <button
+            type="button"
+            class="action-btn delete-btn"
+            data-id="${escapeAttribute(material.id)}"
+            title="Delete material"
+          >
+            Delete
+          </button>
+
+        </div>
+      </td>
+
+    </tr>
+  `;
+}
+
+/* =========================================================
+   UPLOADER
+========================================================= */
+
+function getUploaderName(material) {
+  if (material.uploadedByUid) {
+    const user = allUsers.find((item) => item.id === material.uploadedByUid);
+
+    if (user) {
+      return user.name || user.displayName || user.email || 'Faculty';
+    }
+  }
+
+  return 'Faculty';
+}
+
+/* =========================================================
+   MATERIAL ICON
+========================================================= */
+
+function getMaterialIcon(type) {
+  switch (type) {
+    case 'notes':
+      return 'N';
+
+    case 'important-questions':
+      return '?';
+
+    case 'study-material':
+      return 'S';
+
+    case 'assignment':
+      return 'A';
+
+    case 'previous-year-questions':
+      return 'P';
+
+    default:
+      return 'M';
+  }
+}
+
+/* =========================================================
+   NORMALIZATION
+========================================================= */
+
+function normalizeClass(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return String(value).replace('Class', '').replace('class', '').trim();
+}
+
+function normalizeSubject(value) {
+  if (!value) {
+    return '';
+  }
+
+  return String(value).trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+function normalizeType(value) {
+  if (!value) {
+    return '';
+  }
+
+  return String(value).trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+/* =========================================================
+   FORMAT HELPERS
+========================================================= */
+
+function formatSubject(subject) {
+  const names = {
+    physics: 'Physics',
+
+    chemistry: 'Chemistry',
+
+    mathematics: 'Mathematics',
+
+    biology: 'Biology',
+
+    'computer-science': 'Computer Science',
+  };
+
+  return (
+    names[subject] ||
+    subject
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  );
+}
+
+function formatType(type) {
+  const names = {
+    notes: 'Notes',
+
+    'important-questions': 'Important Questions',
+
+    'study-material': 'Study Material',
+
+    assignment: 'Assignment',
+
+    'previous-year-questions': 'Previous Year Questions',
+  };
+
+  return names[type] || formatSubject(type) || 'Material';
+}
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(timestamp) {
+  const value = getTimestampValue(timestamp);
+
+  if (!value) {
+    return '—';
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '—';
+  }
+
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 }
 
-/* ============================= */
-/* EDIT MATERIAL */
-/* ============================= */
+/* =========================================================
+   HTML ESCAPING
+========================================================= */
 
-async function editMaterial(materialId) {
-  const material = allMaterials.find(function (item) {
-    return item.id === materialId;
-  });
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
-  if (!material) return;
+function escapeAttribute(value) {
+  return escapeHTML(value);
+}
 
-  const newTitle = prompt('Edit material title:', material.title || '');
+/* =========================================================
+   LOADING STATE
+========================================================= */
 
-  if (newTitle === null) {
+function showLoading() {
+  materialsContainer.innerHTML = `
+    <tr>
+      <td colspan="7" class="loading-cell">
+
+        <div class="loader"></div>
+
+        <span>
+          Loading materials...
+        </span>
+
+      </td>
+    </tr>
+  `;
+}
+
+/* =========================================================
+   STATES
+========================================================= */
+
+function hideStates() {
+  hideEmpty();
+  hideError();
+}
+
+function showEmpty() {
+  emptyState?.classList.remove('hidden');
+}
+
+function hideEmpty() {
+  emptyState?.classList.add('hidden');
+}
+
+function showError(message) {
+  if (errorMessage) {
+    errorMessage.textContent = message;
+  }
+
+  errorState?.classList.remove('hidden');
+}
+
+function hideError() {
+  errorState?.classList.add('hidden');
+}
+
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
+
+searchInput?.addEventListener('input', renderMaterials);
+
+classFilter?.addEventListener('change', renderMaterials);
+
+subjectFilter?.addEventListener('change', renderMaterials);
+
+typeFilter?.addEventListener('change', renderMaterials);
+
+/* =========================================================
+   DELETE MATERIAL
+========================================================= */
+
+materialsContainer?.addEventListener('click', async (event) => {
+  const deleteButton = event.target.closest('.delete-btn');
+
+  if (!deleteButton) {
     return;
   }
 
-  const cleanTitle = newTitle.trim();
+  const materialId = deleteButton.dataset.id;
 
-  if (!cleanTitle) {
-    alert('Title cannot be empty.');
-
+  if (!materialId) {
     return;
   }
 
-  try {
-    await updateDoc(doc(db, 'materials', materialId), {
-      title: cleanTitle,
-    });
+  const material = allMaterials.find((item) => item.id === materialId);
 
-    alert('Material updated successfully.');
+  const materialTitle = material?.title || 'this material';
 
-    loadMaterials();
-  } catch (error) {
-    console.error('Update error:', error);
-
-    alert('Unable to update material.');
-  }
-}
-
-/* ============================= */
-/* DELETE MATERIAL */
-/* ============================= */
-
-async function deleteMaterial(materialId) {
-  const confirmed = confirm('Are you sure you want to delete this material?');
+  const confirmed = confirm(
+    `Are you sure you want to delete "${materialTitle}"?`,
+  );
 
   if (!confirmed) {
     return;
   }
 
   try {
+    deleteButton.disabled = true;
+
+    deleteButton.textContent = 'Deleting...';
+
     await deleteDoc(doc(db, 'materials', materialId));
 
-    alert('Material deleted successfully.');
+    allMaterials = allMaterials.filter((item) => item.id !== materialId);
 
-    loadMaterials();
+    updateStatistics();
+
+    populateSubjectFilter();
+
+    renderMaterials();
   } catch (error) {
     console.error('Delete error:', error);
 
-    alert('Unable to delete material.');
+    alert('Unable to delete this material.\n\n' + error.message);
+
+    deleteButton.disabled = false;
+
+    deleteButton.textContent = 'Delete';
   }
-}
+});
 
-/* ============================= */
-/* FILTER EVENTS */
-/* ============================= */
+/* =========================================================
+   RETRY
+========================================================= */
 
-searchInput.addEventListener('input', applyFilters);
+retryBtn?.addEventListener('click', () => {
+  loadMaterials();
+});
 
-classFilter.addEventListener('change', applyFilters);
+/* =========================================================
+   LOGOUT
+========================================================= */
 
-subjectFilter.addEventListener('change', applyFilters);
-
-/* ============================= */
-/* LOGOUT */
-/* ============================= */
-
-logoutBtn.addEventListener('click', async function () {
+logoutBtn?.addEventListener('click', async () => {
   try {
     await signOut(auth);
 

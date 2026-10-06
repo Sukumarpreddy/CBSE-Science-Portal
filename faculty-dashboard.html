@@ -6,254 +6,229 @@
 
     <title>Faculty Dashboard | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/faculty-dashboard.css" />
   </head>
 
   <body>
-    <!-- ================= HEADER ================= -->
+    <div class="dashboard-layout">
+      <!-- ================= SIDEBAR ================= -->
 
-    <header class="faculty-header">
-      <div class="faculty-logo">
-        <strong>CBSE</strong>
-        <span>Science Portal</span>
-      </div>
+      <aside class="sidebar">
+        <a href="index.html" class="sidebar-brand">
+          <span class="brand-mark">CB</span>
 
-      <nav class="faculty-nav">
-        <a href="index.html">Home</a>
+          <div class="brand-text">
+            <strong>CBSE</strong>
+            <span>Science Portal</span>
+          </div>
+        </a>
 
-        <button id="logoutBtn" class="logout-btn">Logout</button>
-      </nav>
-    </header>
+        <div class="sidebar-section">
+          <span class="sidebar-label"> MAIN MENU </span>
 
-    <!-- ================= MAIN ================= -->
+          <a href="faculty-dashboard.html" class="sidebar-link active">
+            <span class="sidebar-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
 
-    <main>
-      <!-- DASHBOARD HERO -->
+          <a href="faculty-materials-list.html" class="sidebar-link">
+            <span class="sidebar-icon">▤</span>
+            <span>My Materials</span>
+          </a>
 
-      <section class="faculty-hero">
-        <div class="faculty-hero-content">
-          <p class="faculty-label">FACULTY PANEL</p>
-
-          <h1>Faculty Dashboard</h1>
-
-          <p>
-            Manage notes, study materials and academic resources for students.
-          </p>
-        </div>
-      </section>
-
-      <!-- DASHBOARD -->
-
-      <section class="dashboard-container">
-        <!-- WELCOME -->
-
-        <div class="dashboard-intro">
-          <p>FACULTY ACCESS</p>
-
-          <h2>Manage Study Materials</h2>
-
-          <span>
-            Upload and manage academic resources for Class 11 and Class 12
-            students.
-          </span>
+          <a href="faculty-materials.html" class="sidebar-link">
+            <span class="sidebar-icon">＋</span>
+            <span>Upload Material</span>
+          </a>
         </div>
 
-        <!-- ACTION CARDS -->
+        <div class="sidebar-section">
+          <span class="sidebar-label"> ACCOUNT </span>
 
-        <div class="dashboard-actions">
-          <!-- UPLOAD CARD -->
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">◎</span>
+            <span>Profile</span>
+          </a>
 
-          <a href="faculty-materials.html" class="dashboard-action-card">
-            <div class="action-icon">📤</div>
+          <button type="button" id="logoutBtn" class="sidebar-link logout-btn">
+            <span class="sidebar-icon">↪</span>
+            <span>Logout</span>
+          </button>
+        </div>
 
-            <div class="action-content">
-              <h3>Upload Material</h3>
+        <div class="sidebar-footer">
+          <div class="footer-line"></div>
+
+          <strong>Faculty Portal</strong>
+
+          <span>Academic Management</span>
+        </div>
+      </aside>
+
+      <!-- ================= MAIN ================= -->
+
+      <main class="dashboard-main">
+        <!-- TOPBAR -->
+
+        <header class="dashboard-topbar">
+          <div class="topbar-left">
+            <span class="topbar-label"> FACULTY PORTAL </span>
+
+            <h1>Dashboard</h1>
+          </div>
+
+          <div class="faculty-profile">
+            <div class="profile-avatar">F</div>
+
+            <div class="profile-details">
+              <strong id="facultyEmail"> Faculty </strong>
+
+              <span> Faculty Account </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- ================= CONTENT ================= -->
+
+        <div class="dashboard-content">
+          <!-- WELCOME -->
+
+          <section class="welcome-section">
+            <div class="welcome-content">
+              <span class="section-label"> ACADEMIC MANAGEMENT </span>
+
+              <h2>Welcome back, Faculty</h2>
 
               <p>
-                Add notes, important questions, assignments and other resources.
+                Manage your study materials and help students access quality
+                academic resources.
               </p>
-
-              <span class="action-link"> Upload Material → </span>
             </div>
-          </a>
 
-          <!-- MANAGE CARD -->
+            <a href="faculty-materials.html" class="primary-btn">
+              <span>＋</span>
+              Upload Material
+            </a>
+          </section>
 
-          <a href="#materials" class="dashboard-action-card">
-            <div class="action-icon">📚</div>
+          <!-- ================= STATISTICS ================= -->
 
-            <div class="action-content">
-              <h3>Manage Materials</h3>
+          <section class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon blue">▤</div>
 
-              <p>View and delete materials already uploaded to the portal.</p>
+              <div class="stat-content">
+                <span> Total Materials </span>
 
-              <span class="action-link"> Manage Materials → </span>
+                <strong id="totalMaterials"> 0 </strong>
+
+                <small> Uploaded resources </small>
+              </div>
             </div>
-          </a>
+
+            <div class="stat-card">
+              <div class="stat-icon green">◫</div>
+
+              <div class="stat-content">
+                <span> Classes </span>
+
+                <strong id="totalClasses"> 0 </strong>
+
+                <small> Classes covered </small>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon purple">◈</div>
+
+              <div class="stat-content">
+                <span> Subjects </span>
+
+                <strong id="totalSubjects"> 0 </strong>
+
+                <small> Subjects covered </small>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon orange">↗</div>
+
+              <div class="stat-content">
+                <span> Recent Uploads </span>
+
+                <strong id="recentUploads"> 0 </strong>
+
+                <small> Latest resources </small>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================= RECENT MATERIALS ================= -->
+
+          <section class="content-section">
+            <div class="section-header">
+              <div>
+                <span class="section-label"> RESOURCE LIBRARY </span>
+
+                <h2>Recent Materials</h2>
+              </div>
+
+              <a href="faculty-materials-list.html" class="view-all-link">
+                View all
+                <span>→</span>
+              </a>
+            </div>
+
+            <div id="materialsList" class="materials-list">
+              <div class="dashboard-loading">Loading materials...</div>
+            </div>
+          </section>
+
+          <!-- ================= QUICK ACTIONS ================= -->
+
+          <section class="content-section quick-actions-section">
+            <div class="section-header">
+              <div>
+                <span class="section-label"> QUICK ACTIONS </span>
+
+                <h2>Manage Portal</h2>
+              </div>
+            </div>
+
+            <div class="quick-actions">
+              <!-- UPLOAD -->
+
+              <a href="faculty-materials.html" class="action-card">
+                <div class="action-icon blue">＋</div>
+
+                <div class="action-content">
+                  <strong> Upload Material </strong>
+
+                  <p>Add notes, questions and study resources for students.</p>
+                </div>
+
+                <div class="action-arrow">→</div>
+              </a>
+
+              <!-- MANAGE -->
+
+              <a href="faculty-materials-list.html" class="action-card">
+                <div class="action-icon green">▤</div>
+
+                <div class="action-content">
+                  <strong> Manage Materials </strong>
+
+                  <p>View, edit or remove your uploaded resources.</p>
+                </div>
+
+                <div class="action-arrow">→</div>
+              </a>
+            </div>
+          </section>
         </div>
-
-        <!-- ================= MATERIALS ================= -->
-
-        <section class="uploaded-section" id="materials">
-          <div class="uploaded-heading">
-            <div>
-              <p>UPLOADED RESOURCES</p>
-
-              <h2>My Materials</h2>
-            </div>
-          </div>
-
-          <!-- FIREBASE MATERIALS -->
-
-          <div id="facultyMaterialContainer" class="faculty-material-grid">
-            <div class="loading-materials">Loading materials...</div>
-          </div>
-        </section>
-      </section>
-    </main>
-    <!-- Edit Material Modal -->
-    <div id="editModal" class="edit-modal">
-      <div class="edit-modal-box">
-        <div class="edit-modal-header">
-          <div>
-            <p>EDIT RESOURCE</p>
-            <h2>Edit Material</h2>
-          </div>
-
-          <button id="closeEditModal" class="close-modal">&times;</button>
-        </div>
-
-        <form id="editMaterialForm">
-          <input type="hidden" id="editMaterialId" />
-
-          <div class="edit-form-grid">
-            <div class="form-group">
-              <label for="editClass">Class</label>
-
-              <select id="editClass" required>
-                <option value="11">Class 11</option>
-                <option value="12">Class 12</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="editSubject">Subject</label>
-
-              <select id="editSubject" required>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="biology">Biology</option>
-                <option value="computer-science">Computer Science</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="editChapter">Chapter</label>
-
-              <input
-                type="text"
-                id="editChapter"
-                placeholder="Chapter 5 - Laws of Motion"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="editTitle">Material Title</label>
-
-              <input
-                type="text"
-                id="editTitle"
-                placeholder="Newton's Laws Notes"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="editType">Material Type</label>
-
-              <select id="editType" required>
-                <option value="notes">Notes</option>
-                <option value="important-questions">Important Questions</option>
-                <option value="study-material">Study Material</option>
-                <option value="assignment">Assignment</option>
-                <option value="previous-year">Previous Year Questions</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="editURL">Resource URL</label>
-
-              <input
-                type="url"
-                id="editURL"
-                placeholder="https://example.com/file.pdf"
-                required
-              />
-            </div>
-
-            <div class="form-group full-width">
-              <label for="editDescription">Description</label>
-
-              <textarea
-                id="editDescription"
-                rows="4"
-                placeholder="Short description of this material"
-              ></textarea>
-            </div>
-          </div>
-
-          <p id="editMessage" class="edit-message"></p>
-
-          <div class="edit-modal-actions">
-            <button type="button" id="cancelEdit" class="cancel-btn">
-              Cancel
-            </button>
-
-            <button type="submit" class="save-edit-btn">Save Changes</button>
-          </div>
-        </form>
-      </div>
+      </main>
     </div>
-    <!-- ================= FOOTER ================= -->
-
-    <footer class="faculty-footer">
-      <h3>CBSE Science Portal</h3>
-
-      <p>Faculty Management System</p>
-
-      <p>© 2026 CBSE Science Portal</p>
-    </footer>
-
-    <!-- ================= FIREBASE DASHBOARD ================= -->
 
     <script type="module" src="js/faculty-dashboard.js"></script>
-
-    <!-- ================= LOGOUT ================= -->
-
-    <script type="module">
-      import {
-        getAuth,
-        signOut,
-      } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js';
-
-      import { app } from './js/firebase.js';
-
-      const auth = getAuth(app);
-
-      document
-        .getElementById('logoutBtn')
-        .addEventListener('click', async function () {
-          try {
-            await signOut(auth);
-
-            window.location.href = 'login.html';
-          } catch (error) {
-            console.error('Logout error:', error);
-          }
-        });
-    </script>
   </body>
 </html>
