@@ -2,203 +2,222 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Study Resources | CBSE Science Portal</title>
+    <title>Study Materials | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
+    <meta
+      name="description"
+      content="Access CBSE Class 11 and 12 science study materials, notes, question papers and important resources."
+    />
+
     <link rel="stylesheet" href="css/materials.css" />
   </head>
 
   <body>
-    <!-- ================= HEADER ================= -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-    <header class="portal-header">
-      <div class="header-container">
-        <a href="index.html" class="portal-logo">
-          <span class="logo-box">CB</span>
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="index.html" class="brand">
+          <div class="brand-mark">CB</div>
 
-          <span class="logo-name">
-            <strong>CBSE</strong>
-            <span>Science Portal</span>
-          </span>
+          <div class="brand-text">
+            <strong>CBSE Science</strong>
+            <span>Learning Portal</span>
+          </div>
         </a>
 
-        <nav class="portal-navigation">
-          <a href="index.html">Home</a>
-          <a href="index.html#classes">Classes</a>
-          <a href="index.html#subjects">Subjects</a>
-          <a href="index.html#about">About</a>
+        <nav class="main-nav">
+          <a href="index.html"> Home </a>
 
-          <a href="login.html" class="faculty-login"> Faculty Login </a>
+          <a href="class.html?class=11"> Classes </a>
+
+          <a href="class.html?class=11"> Subjects </a>
+
+          <a href="index.html#about"> About </a>
         </nav>
+
+        <a href="login.html" class="faculty-link">
+          Faculty Login
+          <span>→</span>
+        </a>
       </div>
     </header>
 
-    <!-- ================= HERO ================= -->
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-    <section class="materials-hero">
-      <div class="materials-container">
-        <div class="materials-breadcrumb">
-          <a href="index.html">Home</a>
+    <main>
+      <!-- =================================================
+             HERO
+        ================================================== -->
 
-          <span>/</span>
-
-          <a id="classBreadcrumbLink" href="#"> Class 11 </a>
-
-          <span>/</span>
-
-          <a id="subjectBreadcrumbLink" href="#"> Physics </a>
-
-          <span>/</span>
-
-          <strong id="breadcrumbChapter"> Laws of Motion </strong>
-        </div>
-
-        <div class="hero-content">
-          <div class="hero-label">CBSE SCIENCE PORTAL</div>
-
-          <h1 id="subjectTitle">Laws of Motion</h1>
-
-          <p id="pageDescription">Study materials for Class 11 Physics.</p>
-        </div>
-
-        <div class="hero-info">
-          <div class="hero-info-item">
-            <span class="info-number">01</span>
-
-            <div>
-              <strong>Chapter</strong>
-              <small>Course Content</small>
-            </div>
-          </div>
-
-          <div class="hero-info-item">
-            <span class="info-number">02</span>
-
-            <div>
-              <strong>Resources</strong>
-              <small>Study Materials</small>
-            </div>
-          </div>
-
-          <div class="hero-info-item">
-            <span class="info-number">03</span>
-
-            <div>
-              <strong>Learning</strong>
-              <small>Prepare & Practice</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= MAIN ================= -->
-
-    <main class="materials-main">
-      <div class="materials-container">
-        <!-- SECTION HEADER -->
-
-        <div class="resources-heading">
-          <div>
-            <span class="section-label"> STUDY LIBRARY </span>
-
-            <h2>Chapter Resources</h2>
-          </div>
-
-          <p>
-            Find notes, important questions, assignments and other learning
-            resources for this chapter.
-          </p>
-        </div>
-
-        <!-- ================= SEARCH ================= -->
-
-        <section class="resource-tools">
-          <div class="search-wrapper">
-            <label for="materialSearch"> Search resources </label>
-
-            <div class="search-input">
-              <span class="search-icon">⌕</span>
-
-              <input
-                type="search"
-                id="materialSearch"
-                placeholder="Search notes, questions, assignments..."
-                autocomplete="off"
-              />
-            </div>
-          </div>
-
-          <div class="filter-wrapper">
-            <label for="materialTypeFilter"> Filter by type </label>
-
-            <select id="materialTypeFilter">
-              <option value="all">All Materials</option>
-
-              <option value="notes">Notes</option>
-
-              <option value="important-questions">Important Questions</option>
-
-              <option value="study-material">Study Material</option>
-
-              <option value="assignment">Assignments</option>
-
-              <option value="previous-year">Previous Year Questions</option>
-            </select>
-          </div>
-        </section>
-
-        <!-- RESULT COUNT -->
-
-        <div id="materialResultCount" class="material-result-count">
-          Loading study resources...
-        </div>
-
-        <!-- ================= MATERIAL CARDS ================= -->
-
-        <section id="materialContainer" class="material-grid"></section>
-
-        <!-- ================= STUDY TIP ================= -->
-
-        <section class="study-tip">
-          <div class="tip-icon">✓</div>
-
-          <div>
-            <span> STUDY TIP </span>
-
-            <h3>Learn the concept before solving questions.</h3>
-
-            <p>
-              Start with your chapter notes, understand the concepts, and then
-              practise important questions and assignments.
-            </p>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer class="portal-footer">
-      <div class="materials-container">
-        <div class="footer-top">
-          <div>
-            <a href="index.html" class="footer-logo"> CBSE Science Portal </a>
-
-            <p>
-              A learning resource platform for CBSE Class 11 &amp; 12 Science
-              students.
-            </p>
-          </div>
-
-          <div class="footer-navigation">
+      <section class="materials-hero">
+        <div class="container">
+          <div class="breadcrumb">
             <a href="index.html"> Home </a>
 
-            <a href="index.html#classes"> Classes </a>
+            <span>›</span>
 
-            <a href="index.html#subjects"> Subjects </a>
+            <a id="classBreadcrumbLink" href="#"> Class </a>
+
+            <span>›</span>
+
+            <span id="subjectBreadcrumb"> Subject </span>
+          </div>
+
+          <div class="hero-content">
+            <div class="hero-label">STUDY MATERIALS</div>
+
+            <h1 id="subjectTitle">Study Materials</h1>
+
+            <p id="pageDescription">
+              Access notes, question papers, important questions and other
+              academic resources.
+            </p>
+          </div>
+
+          <!-- CHAPTER INFORMATION -->
+
+          <div class="chapter-summary">
+            <div class="summary-icon">📖</div>
+
+            <div>
+              <span> CURRENT CHAPTER </span>
+
+              <strong id="chapterName"> Loading chapter... </strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             MATERIALS SECTION
+        ================================================== -->
+
+      <section class="materials-section">
+        <div class="container">
+          <!-- TOOLBAR -->
+
+          <div class="materials-toolbar">
+            <div class="toolbar-left">
+              <h2>Available Resources</h2>
+
+              <p id="resultCount">Loading materials...</p>
+            </div>
+
+            <div class="toolbar-right">
+              <!-- SEARCH -->
+
+              <div class="search-box">
+                <span class="search-icon"> ⌕ </span>
+
+                <input
+                  type="search"
+                  id="searchInput"
+                  placeholder="Search materials..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <!-- TYPE FILTER -->
+
+              <select id="typeFilter">
+                <option value="all">All Types</option>
+
+                <option value="notes">Notes</option>
+
+                <option value="important questions">Important Questions</option>
+
+                <option value="question paper">Question Papers</option>
+
+                <option value="resource">Resources</option>
+
+                <option value="study material">Study Material</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- =================================================
+                     LOADING STATE
+                ================================================== -->
+
+          <div id="loadingState" class="state-box loading-state">
+            <div class="loading-spinner"></div>
+
+            <h3>Loading study materials</h3>
+
+            <p>Please wait while we fetch the latest resources.</p>
+          </div>
+
+          <!-- =================================================
+                     ERROR STATE
+                ================================================== -->
+
+          <div id="errorState" class="state-box error-state" hidden>
+            <div class="state-icon">!</div>
+
+            <h3>Unable to load materials</h3>
+
+            <p id="errorMessage">
+              Something went wrong while loading the resources.
+            </p>
+
+            <button type="button" id="retryBtn" class="retry-btn">
+              Try Again
+            </button>
+          </div>
+
+          <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+          <div id="emptyState" class="state-box empty-state" hidden>
+            <div class="state-icon">📚</div>
+
+            <h3>No materials found</h3>
+
+            <p>There are currently no resources available for this chapter.</p>
+          </div>
+
+          <!-- =================================================
+                     MATERIAL GRID
+                ================================================== -->
+
+          <div id="materialsContainer" class="materials-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <div class="footer-logo">CB</div>
+
+            <div>
+              <strong> CBSE Science Portal </strong>
+
+              <p>
+                A centralized learning platform for Class 11 & 12 Science
+                students.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <a href="index.html"> Home </a>
+
+            <a href="class.html?class=11"> Classes </a>
 
             <a href="login.html"> Faculty Login </a>
           </div>
@@ -207,7 +226,7 @@
         <div class="footer-bottom">
           <span> © 2026 CBSE Science Portal </span>
 
-          <span> Academic Learning Platform </span>
+          <span> Built for better learning </span>
         </div>
       </div>
     </footer>

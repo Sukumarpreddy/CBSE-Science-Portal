@@ -4,72 +4,189 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Faculty Login | CBSE Science Portal</title>
+    <title>Faculty & Admin Login | CBSE Science Portal</title>
 
-    <link rel="stylesheet" href="css/style.css" />
+    <meta
+      name="description"
+      content="Secure faculty and administrator login for the CBSE Science Portal."
+    />
+
     <link rel="stylesheet" href="css/login.css" />
   </head>
 
   <body>
-    <header class="header">
-      <div class="logo">CBSE <span>Science Portal</span></div>
-
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="index.html#classes">Classes</a>
-        <a href="index.html#about">About</a>
-      </nav>
-    </header>
-
     <main class="login-page">
-      <div class="login-card">
-        <div class="login-icon">🔐</div>
+      <!-- LEFT BRAND PANEL -->
+      <section class="brand-panel">
+        <div class="brand-content">
+          <a href="index.html" class="brand">
+            <div class="brand-logo">CB</div>
 
-        <p class="small-title">FACULTY ACCESS</p>
+            <div>
+              <strong>CBSE Science</strong>
+              <span>Learning Portal</span>
+            </div>
+          </a>
 
-        <h1>Faculty Login</h1>
+          <div class="brand-message">
+            <span class="eyebrow"> FACULTY & ADMINISTRATION </span>
 
-        <p class="login-description">
-          Login to upload notes, study materials and resources.
-        </p>
+            <h1>
+              Empowering teachers.<br />
+              Supporting students.
+            </h1>
 
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="email">Email Address</label>
+            <p>
+              A secure workspace for faculty members and administrators to
+              manage learning resources, study materials and academic content.
+            </p>
 
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter faculty email"
-              required
-            />
+            <div class="features">
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <div>
+                  <strong>Centralized Resources</strong>
+                  <small> Manage academic materials from one place. </small>
+                </div>
+              </div>
+
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <div>
+                  <strong>Secure Access</strong>
+                  <small> Protected faculty and administrator accounts. </small>
+                </div>
+              </div>
+
+              <div class="feature">
+                <span class="feature-icon">✓</span>
+                <div>
+                  <strong>Student Ready</strong>
+                  <small>
+                    Publish resources for Class 11 and 12 students.
+                  </small>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="password">Password</label>
+          <div class="brand-footer">© 2026 CBSE Science Portal</div>
+        </div>
+      </section>
 
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter password"
-              required
-            />
+      <!-- RIGHT LOGIN PANEL -->
+      <section class="login-panel">
+        <div class="login-container">
+          <div class="mobile-brand">
+            <div class="brand-logo">CB</div>
+
+            <div>
+              <strong>CBSE Science</strong>
+              <span>Learning Portal</span>
+            </div>
           </div>
 
-          <button type="submit" class="login-submit">Login</button>
-        </form>
+          <div class="login-header">
+            <span class="login-label"> SECURE ACCESS </span>
 
-        <p id="loginMessage"></p>
+            <h2>Welcome back</h2>
 
-        <a href="index.html" class="back-home"> ← Back to Home </a>
-      </div>
+            <p>Sign in to access your portal workspace.</p>
+          </div>
+
+          <!-- LOGIN MESSAGE -->
+          <div
+            id="formMessage"
+            class="form-message"
+            role="alert"
+            aria-live="polite"
+          ></div>
+
+          <!-- LOGIN FORM -->
+          <form id="loginForm" class="login-form">
+            <!-- EMAIL -->
+            <div class="form-group">
+              <label for="email"> Email address </label>
+
+              <div class="input-wrapper">
+                <span class="input-icon"> @ </span>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email address"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+              <div class="password-label">
+                <label for="password"> Password </label>
+              </div>
+
+              <div class="input-wrapper">
+                <span class="input-icon password-icon"> • </span>
+
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                />
+
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="password-toggle"
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+              </div>
+            </div>
+
+            <!-- OPTIONS -->
+            <div class="form-options">
+              <label class="remember">
+                <input type="checkbox" id="rememberMe" />
+
+                <span class="checkmark"></span>
+
+                <span>Remember me</span>
+              </label>
+            </div>
+
+            <!-- LOGIN BUTTON -->
+            <button type="submit" id="loginBtn" class="login-btn">
+              <span id="loginBtnText"> Sign in </span>
+
+              <span id="loginSpinner" class="spinner" aria-hidden="true"></span>
+
+              <span class="arrow"> → </span>
+            </button>
+          </form>
+
+          <div class="security-note">
+            <span class="lock-icon">🔒</span>
+
+            <span>
+              Your connection is protected by Firebase Authentication.
+            </span>
+          </div>
+
+          <a href="index.html" class="back-link">
+            <span>←</span>
+            Back to CBSE Science Portal
+          </a>
+        </div>
+      </section>
     </main>
-
-    <footer>
-      <h3>CBSE Science Portal</h3>
-      <p>Class 11 &amp; 12 Science Learning Resources</p>
-      <p>© 2026 CBSE Science Portal</p>
-    </footer>
 
     <script type="module" src="js/login.js"></script>
   </body>

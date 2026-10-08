@@ -1,8 +1,3 @@
-// ======================================================
-// CBSE SCIENCE PORTAL
-// MATERIALS PAGE
-// ======================================================
-
 import {
   getFirestore,
   collection,
@@ -11,15 +6,7 @@ import {
 
 import { app } from './firebase.js';
 
-// ======================================================
-// FIRESTORE
-// ======================================================
-
 const db = getFirestore(app);
-
-// ======================================================
-// URL PARAMETERS
-// ======================================================
 
 const params = new URLSearchParams(window.location.search);
 
@@ -27,30 +14,24 @@ const selectedClass = params.get('class');
 const selectedSubject = params.get('subject');
 const selectedChapter = params.get('chapter');
 
-// ======================================================
-// DOM ELEMENTS
-// ======================================================
-
+const classBreadcrumbLink = document.getElementById('classBreadcrumbLink');
+const subjectBreadcrumb = document.getElementById('subjectBreadcrumb');
 const subjectTitle = document.getElementById('subjectTitle');
 const pageDescription = document.getElementById('pageDescription');
+const chapterName = document.getElementById('chapterName');
+const searchInput = document.getElementById('searchInput');
+const typeFilter = document.getElementById('typeFilter');
+const materialsContainer = document.getElementById('materialsContainer');
+const resultCount = document.getElementById('resultCount');
+const loadingState = document.getElementById('loadingState');
+const emptyState = document.getElementById('emptyState');
+const errorState = document.getElementById('errorState');
+const errorMessage = document.getElementById('errorMessage');
+const retryBtn = document.getElementById('retryBtn');
 
-const classBreadcrumbLink = document.getElementById('classBreadcrumbLink');
-
-const subjectBreadcrumbLink = document.getElementById('subjectBreadcrumbLink');
-
-const breadcrumbChapter = document.getElementById('breadcrumbChapter');
-
-const materialContainer = document.getElementById('materialContainer');
-
-const materialSearch = document.getElementById('materialSearch');
-
-const materialTypeFilter = document.getElementById('materialTypeFilter');
-
-const materialResultCount = document.getElementById('materialResultCount');
-
-// ======================================================
-// SUBJECT NAMES
-// ======================================================
+/* =========================================================
+   SUBJECT NAMES
+========================================================= */
 
 const subjectNames = {
   physics: 'Physics',
@@ -60,9 +41,9 @@ const subjectNames = {
   'computer-science': 'Computer Science',
 };
 
-// ======================================================
-// CHAPTER NAMES
-// ======================================================
+/* =========================================================
+   CHAPTER DATA
+========================================================= */
 
 const chapters = {
   11: {
@@ -87,20 +68,20 @@ const chapters = {
     chemistry: [
       'Some Basic Concepts of Chemistry',
       'Structure of Atom',
-      'Classification of Elements and Periodicity',
+      'Classification of Elements and Periodicity in Properties',
       'Chemical Bonding and Molecular Structure',
       'Thermodynamics',
       'Equilibrium',
       'Redox Reactions',
-      'Organic Chemistry – Basic Principles',
+      'Organic Chemistry – Some Basic Principles and Techniques',
       'Hydrocarbons',
-      'Some Basic Principles of Organic Chemistry',
     ],
 
     mathematics: [
       'Sets',
       'Relations and Functions',
       'Trigonometric Functions',
+      'Principle of Mathematical Induction',
       'Complex Numbers and Quadratic Equations',
       'Linear Inequalities',
       'Permutations and Combinations',
@@ -127,7 +108,7 @@ const chapters = {
       'Cell Cycle and Cell Division',
       'Transport in Plants',
       'Mineral Nutrition',
-      'Photosynthesis in Plants',
+      'Photosynthesis in Higher Plants',
       'Respiration in Plants',
       'Plant Growth and Development',
       'Digestion and Absorption',
@@ -141,9 +122,11 @@ const chapters = {
 
     'computer-science': [
       'Computer Systems',
-      'Python Programming',
-      'Data Representation',
-      'Boolean Logic',
+      'Encoding Schemes and Number System',
+      'Emerging Trends',
+      'Introduction to Python',
+      'Getting Started with Python',
+      'Python Basics',
       'Data Handling',
       'Society, Law and Ethics',
     ],
@@ -171,7 +154,7 @@ const chapters = {
       'Solutions',
       'Electrochemistry',
       'Chemical Kinetics',
-      'The d- and f-Block Elements',
+      'd- and f-Block Elements',
       'Coordination Compounds',
       'Haloalkanes and Haloarenes',
       'Alcohols, Phenols and Ethers',
@@ -211,23 +194,29 @@ const chapters = {
       'Organisms and Populations',
       'Ecosystem',
       'Biodiversity and Conservation',
+      'Environmental Issues',
     ],
 
     'computer-science': [
       'Computer Networks',
+      'Data Management',
       'Database Concepts',
-      'SQL',
-      'Python Programming',
-      'Data Structures',
-      'Computer Security',
-      'Society, Law and Ethics',
+      'Introduction to SQL',
+      'Computer Science Applications',
+      'Societal Impacts',
     ],
   },
 };
 
-// ======================================================
-// HELPERS
-// ======================================================
+/* =========================================================
+   STATE
+========================================================= */
+
+let allMaterials = [];
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
 
 function normalize(value) {
   return String(value ?? '')
@@ -236,182 +225,204 @@ function normalize(value) {
     .replace(/\s+/g, ' ');
 }
 
-function normalizeClass(value) {
-  const valueText = normalize(value);
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-  if (
-    valueText === '11' ||
-    valueText === 'class 11' ||
-    valueText === 'class11' ||
-    valueText === '11th' ||
-    valueText === '11th class'
-  ) {
-    return '11';
-  }
-
-  if (
-    valueText === '12' ||
-    valueText === 'class 12' ||
-    valueText === 'class12' ||
-    valueText === '12th' ||
-    valueText === '12th class'
-  ) {
-    return '12';
-  }
-
-  return valueText.replace(/\D/g, '');
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
-function normalizeSubject(value) {
-  const valueText = normalize(value);
+/* =========================================================
+   SUBJECT NAME
+========================================================= */
 
-  const subjectMap = {
-    physics: 'physics',
-    chemistry: 'chemistry',
-    mathematics: 'mathematics',
-    maths: 'mathematics',
-    math: 'mathematics',
-    biology: 'biology',
-    'computer science': 'computer-science',
-    'computer-science': 'computer-science',
-    computerscience: 'computer-science',
-  };
-
-  return subjectMap[valueText] || valueText;
+function getSubjectName(subject) {
+  return subjectNames[normalize(subject)] || 'Science';
 }
+
+/* =========================================================
+   CHAPTER NAME
+========================================================= */
 
 function getChapterName() {
-  const classData = chapters[selectedClass];
-  const subjectData = classData?.[selectedSubject];
+  const classData = chapters[String(selectedClass)];
+
+  if (!classData) {
+    return 'Chapter';
+  }
+
+  const subjectData = classData[normalize(selectedSubject)];
 
   if (!subjectData) {
     return 'Chapter';
   }
 
-  const chapterNumber = Number(selectedChapter);
+  const chapterIndex = Number(selectedChapter) - 1;
 
-  if (
-    Number.isInteger(chapterNumber) &&
-    chapterNumber >= 1 &&
-    chapterNumber <= subjectData.length
-  ) {
-    return subjectData[chapterNumber - 1];
-  }
-
-  return 'Chapter';
+  return subjectData[chapterIndex] || `Chapter ${selectedChapter}`;
 }
 
-function normalizeChapter(value) {
-  return normalize(value)
-    .replace(/^chapter\s*/i, '')
-    .trim();
-}
+/* =========================================================
+   FORMAT DATE
+========================================================= */
 
-function isMatchingChapter(materialChapter, requestedChapter, chapterName) {
-  const materialValue = normalizeChapter(materialChapter);
-  const requestedValue = normalizeChapter(requestedChapter);
-  const chapterNameValue = normalizeChapter(chapterName);
-
-  // Chapter number
-  if (materialValue === requestedValue) {
-    return true;
+function formatDate(timestamp) {
+  if (!timestamp) {
+    return 'Recently added';
   }
 
-  // Chapter name
-  if (materialValue === chapterNameValue) {
-    return true;
-  }
+  try {
+    let date;
 
-  // Example:
-  // Firebase: "Chapter 5"
-  // URL: 5
-  if (materialValue.replace(/\D/g, '') === requestedValue.replace(/\D/g, '')) {
-    return true;
-  }
+    if (typeof timestamp.toDate === 'function') {
+      date = timestamp.toDate();
+    } else if (timestamp.seconds) {
+      date = new Date(timestamp.seconds * 1000);
+    } else {
+      date = new Date(timestamp);
+    }
 
-  return false;
-}
+    if (Number.isNaN(date.getTime())) {
+      return 'Recently added';
+    }
 
-// ======================================================
-// PAGE DATA
-// ======================================================
-
-const chapterName = getChapterName();
-
-const subjectName =
-  subjectNames[selectedSubject] || selectedSubject || 'Subject';
-
-// ======================================================
-// UPDATE PAGE
-// ======================================================
-
-function updatePage() {
-  if (subjectTitle) {
-    subjectTitle.textContent = chapterName;
-  }
-
-  if (pageDescription) {
-    pageDescription.textContent = `Study materials for Class ${selectedClass} ${subjectName}.`;
-  }
-
-  if (classBreadcrumbLink) {
-    classBreadcrumbLink.textContent = `Class ${selectedClass}`;
-
-    classBreadcrumbLink.href = `class.html?class=${selectedClass}`;
-  }
-
-  if (subjectBreadcrumbLink) {
-    subjectBreadcrumbLink.textContent = subjectName;
-
-    subjectBreadcrumbLink.href = `chapters.html?class=${selectedClass}&subject=${selectedSubject}`;
-  }
-
-  if (breadcrumbChapter) {
-    breadcrumbChapter.textContent = chapterName;
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return 'Recently added';
   }
 }
 
-updatePage();
+/* =========================================================
+   MATERIAL TYPE
+========================================================= */
 
-// ======================================================
-// MATERIAL DATA
-// ======================================================
+function getMaterialType(material) {
+  return String(material.type || 'Study Material').trim();
+}
 
-let allMaterials = [];
+/* =========================================================
+   TYPE CLASS
+========================================================= */
 
-// ======================================================
-// LOADING UI
-// ======================================================
+function getTypeClass(type) {
+  const value = normalize(type);
+
+  if (value.includes('note')) {
+    return 'type-notes';
+  }
+
+  if (value.includes('important')) {
+    return 'type-important';
+  }
+
+  if (value.includes('question')) {
+    return 'type-question';
+  }
+
+  if (value.includes('resource')) {
+    return 'type-resource';
+  }
+
+  return '';
+}
+
+/* =========================================================
+   TYPE ICON
+========================================================= */
+
+function getTypeIcon(type) {
+  const value = normalize(type);
+
+  if (value.includes('note')) {
+    return '📝';
+  }
+
+  if (value.includes('important')) {
+    return '★';
+  }
+
+  if (value.includes('question')) {
+    return '📄';
+  }
+
+  if (value.includes('resource')) {
+    return '🔗';
+  }
+
+  return '📚';
+}
+
+/* =========================================================
+   STATES
+========================================================= */
 
 function showLoading() {
-  materialResultCount.textContent = 'Loading study resources...';
-
-  materialContainer.innerHTML = `
-    <div class="materials-loading">
-
-      <div class="loading-card">
-        <div class="skeleton skeleton-icon"></div>
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-text"></div>
-        <div class="skeleton skeleton-text short"></div>
-        <div class="skeleton skeleton-button"></div>
-      </div>
-
-      <div class="loading-card">
-        <div class="skeleton skeleton-icon"></div>
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-text"></div>
-        <div class="skeleton skeleton-text short"></div>
-        <div class="skeleton skeleton-button"></div>
-      </div>
-
-    </div>
-  `;
+  loadingState.hidden = false;
+  emptyState.hidden = true;
+  errorState.hidden = true;
+  materialsContainer.innerHTML = '';
 }
 
-// ======================================================
-// LOAD FIREBASE MATERIALS
-// ======================================================
+function hideLoading() {
+  loadingState.hidden = true;
+}
+
+function showEmpty() {
+  loadingState.hidden = true;
+  errorState.hidden = true;
+  emptyState.hidden = false;
+  materialsContainer.innerHTML = '';
+}
+
+function showError(message) {
+  loadingState.hidden = true;
+  emptyState.hidden = true;
+  errorState.hidden = false;
+  errorMessage.textContent = message;
+  materialsContainer.innerHTML = '';
+}
+
+/* =========================================================
+   PAGE INFORMATION
+========================================================= */
+
+function setupPage() {
+  const subjectName = getSubjectName(selectedSubject);
+  const currentChapter = getChapterName();
+
+  subjectBreadcrumb.textContent = subjectName;
+
+  subjectTitle.textContent = `${subjectName} Study Materials`;
+
+  chapterName.textContent = currentChapter;
+
+  pageDescription.textContent = `Access study materials, notes, questions and academic resources for ${subjectName}.`;
+
+  if (selectedClass) {
+    classBreadcrumbLink.textContent = `Class ${selectedClass}`;
+
+    classBreadcrumbLink.href = `class.html?class=${encodeURIComponent(selectedClass)}`;
+  } else {
+    classBreadcrumbLink.textContent = 'Classes';
+    classBreadcrumbLink.href = 'class.html?class=11';
+  }
+
+  document.title = `${subjectName} Materials | CBSE Science Portal`;
+}
+
+/* =========================================================
+   LOAD MATERIALS
+========================================================= */
 
 async function loadMaterials() {
   showLoading();
@@ -421,335 +432,274 @@ async function loadMaterials() {
 
     allMaterials = [];
 
-    snapshot.forEach((docSnapshot) => {
-      const material = docSnapshot.data();
-
+    snapshot.forEach((documentSnapshot) => {
       allMaterials.push({
-        id: docSnapshot.id,
-        ...material,
+        id: documentSnapshot.id,
+        ...documentSnapshot.data(),
       });
     });
 
-    console.log('Firebase materials:', allMaterials);
+    /* FILTER BY CLASS / SUBJECT / CHAPTER */
 
-    // ==================================================
-    // NORMALIZED TARGET VALUES
-    // ==================================================
-
-    const targetClass = normalizeClass(selectedClass);
-
-    const targetSubject = normalizeSubject(selectedSubject);
-
-    // ==================================================
-    // FILTER MATERIALS
-    // ==================================================
+    const classValue = normalize(selectedClass);
+    const subjectValue = normalize(selectedSubject);
+    const chapterValue = normalize(selectedChapter);
 
     allMaterials = allMaterials.filter((material) => {
-      const materialClass = normalizeClass(material.class);
+      const materialClass = normalize(material.class);
+      const materialSubject = normalize(material.subject);
+      const materialChapter = normalize(material.chapter);
 
-      const materialSubject = normalizeSubject(material.subject);
-
-      const classMatches = materialClass === targetClass;
-
-      const subjectMatches = materialSubject === targetSubject;
-
-      const chapterMatches = isMatchingChapter(
-        material.chapter,
-        selectedChapter,
-        chapterName,
+      return (
+        materialClass === classValue &&
+        materialSubject === subjectValue &&
+        materialChapter === chapterValue
       );
-
-      console.log('Checking material:', {
-        title: material.title,
-        firebaseClass: material.class,
-        normalizedClass: materialClass,
-        firebaseSubject: material.subject,
-        normalizedSubject: materialSubject,
-        firebaseChapter: material.chapter,
-        classMatches,
-        subjectMatches,
-        chapterMatches,
-      });
-
-      return classMatches && subjectMatches && chapterMatches;
     });
 
-    console.log('Matched materials:', allMaterials);
+    /* SORT NEWEST FIRST */
 
-    renderMaterials();
+    allMaterials.sort((a, b) => {
+      const aDate = getTimestampValue(a.uploadedAt);
+      const bDate = getTimestampValue(b.uploadedAt);
+
+      return bDate - aDate;
+    });
+
+    hideLoading();
+
+    applyFilters();
   } catch (error) {
-    console.error('Firebase materials error:', error);
+    console.error('Failed to load materials:', error);
 
-    materialResultCount.textContent = 'Unable to load resources';
-
-    materialContainer.innerHTML = `
-      <div class="materials-error">
-
-        <div class="state-icon">!</div>
-
-        <h3>
-          Unable to load resources
-        </h3>
-
-        <p>
-          We couldn't connect to the study
-          materials database. Please try again.
-        </p>
-
-        <button
-          class="retry-btn"
-          onclick="location.reload()"
-        >
-          Try Again
-        </button>
-
-      </div>
-    `;
+    showError('We could not load the study materials. Please try again.');
   }
 }
 
-// ======================================================
-// RENDER MATERIALS
-// ======================================================
+/* =========================================================
+   TIMESTAMP
+========================================================= */
 
-function renderMaterials() {
-  const searchText = normalize(materialSearch?.value);
+function getTimestampValue(timestamp) {
+  if (!timestamp) {
+    return 0;
+  }
 
-  const selectedType = normalize(materialTypeFilter?.value || 'all');
+  try {
+    if (typeof timestamp.toDate === 'function') {
+      return timestamp.toDate().getTime();
+    }
 
-  const filteredMaterials = allMaterials.filter((material) => {
+    if (timestamp.seconds) {
+      return Number(timestamp.seconds) * 1000;
+    }
+
+    const date = new Date(timestamp);
+
+    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+  } catch {
+    return 0;
+  }
+}
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function applyFilters() {
+  const searchTerm = normalize(searchInput.value);
+
+  const selectedType = normalize(typeFilter.value);
+
+  const filtered = allMaterials.filter((material) => {
     const title = normalize(material.title);
 
     const description = normalize(material.description);
 
     const type = normalize(material.type);
 
-    const searchMatches =
-      !searchText ||
-      title.includes(searchText) ||
-      description.includes(searchText) ||
-      type.includes(searchText);
+    const matchesSearch =
+      !searchTerm ||
+      title.includes(searchTerm) ||
+      description.includes(searchTerm) ||
+      type.includes(searchTerm);
 
-    const typeMatches = selectedType === 'all' || type === selectedType;
+    const matchesType =
+      !selectedType ||
+      selectedType === 'all' ||
+      type === selectedType ||
+      (selectedType === 'question paper' && type.includes('question')) ||
+      (selectedType === 'important questions' && type.includes('important')) ||
+      (selectedType === 'study material' && type.includes('study'));
 
-    return searchMatches && typeMatches;
+    return matchesSearch && matchesType;
   });
 
-  // ==================================================
-  // RESULT COUNT
-  // ==================================================
+  renderMaterials(filtered);
+}
 
-  const count = filteredMaterials.length;
+/* =========================================================
+   RENDER MATERIALS
+========================================================= */
 
-  materialResultCount.textContent = `${count} material${count !== 1 ? 's' : ''} available`;
-
-  // ==================================================
-  // EMPTY STATE
-  // ==================================================
-
-  if (count === 0) {
-    materialContainer.innerHTML = `
-      <div class="materials-empty">
-
-        <div class="empty-icon">
-          <span>⌕</span>
-        </div>
-
-        <h3>
-          No materials found
-        </h3>
-
-        <p>
-          There are no study resources matching
-          your current search or filter.
-        </p>
-
-        <button
-          class="clear-search-btn"
-          id="clearSearchBtn"
-        >
-          Clear Filters
-        </button>
-
-      </div>
-    `;
-
-    const clearButton = document.getElementById('clearSearchBtn');
-
-    clearButton?.addEventListener('click', () => {
-      if (materialSearch) {
-        materialSearch.value = '';
-      }
-
-      if (materialTypeFilter) {
-        materialTypeFilter.value = 'all';
-      }
-
-      renderMaterials();
-    });
-
+function renderMaterials(materials) {
+  if (!materials.length) {
+    showEmpty();
+    resultCount.textContent = 'No matching resources';
     return;
   }
 
-  // ==================================================
-  // MATERIAL GRID
-  // ==================================================
+  emptyState.hidden = true;
+  errorState.hidden = true;
+  loadingState.hidden = true;
 
-  materialContainer.innerHTML = '';
+  resultCount.textContent = `${materials.length} ${
+    materials.length === 1 ? 'resource' : 'resources'
+  } available`;
 
-  filteredMaterials.forEach((material, index) => {
-    const card = document.createElement('article');
+  materialsContainer.innerHTML = materials.map(createMaterialCard).join('');
+}
 
-    card.className = 'material-card';
+/* =========================================================
+   MATERIAL CARD
+========================================================= */
 
-    const title = material.title || 'Untitled Material';
+function createMaterialCard(material) {
+  const title = escapeHTML(material.title || 'Untitled Material');
 
-    const description =
-      material.description || 'Study material uploaded by faculty.';
+  const description = escapeHTML(
+    material.description || 'Academic study material for students.',
+  );
 
-    const type = formatMaterialType(material.type);
+  const type = getMaterialType(material);
 
-    const resourceURL =
-      material.resourceURL || material.fileURL || material.url || '#';
+  const safeType = escapeHTML(type);
 
-    card.innerHTML = `
+  const typeClass = getTypeClass(type);
 
-        <div class="material-card-top">
+  const icon = getTypeIcon(type);
 
-          <div class="material-file-icon">
-            <span>PDF</span>
-          </div>
+  const date = formatDate(material.uploadedAt);
 
-          <span class="material-type">
-            ${escapeHTML(type)}
-          </span>
+  /* STUDENT VISIBLE CLASS */
 
+  const className = escapeHTML(`Class ${selectedClass || ''}`);
+
+  /* STUDENT VISIBLE SUBJECT */
+
+  const subjectName = escapeHTML(getSubjectName(selectedSubject));
+
+  /* RESOURCE URL */
+
+  const resourceURL =
+    material.resourceURL || material.fileURL || material.url || '';
+
+  let actionHTML;
+
+  if (resourceURL) {
+    actionHTML = `
+      <a
+        href="${escapeHTML(resourceURL)}"
+        class="card-action"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open Resource
+        <span>↗</span>
+      </a>
+    `;
+  } else {
+    actionHTML = `
+      <span
+        class="card-action"
+        style="
+          opacity:0.55;
+          cursor:not-allowed;
+        "
+      >
+        Resource unavailable
+      </span>
+    `;
+  }
+
+  return `
+
+    <article class="material-card ${typeClass}">
+
+      <div class="card-top">
+
+        <div class="material-icon">
+          ${icon}
         </div>
 
-        <div class="material-card-content">
+        <span class="material-type">
+          ${safeType}
+        </span>
 
-          <div class="material-number">
-  STUDY RESOURCE ${String(index + 1).padStart(2, '0')}
-</div>
+      </div>
 
-          <h3>
-            ${escapeHTML(title)}
-          </h3>
-
-          <p>
-            ${escapeHTML(description)}
-          </p>
-
-        </div>
-
-        <div class="material-card-footer">
-
-          <span class="material-source">
-            Faculty Resource
-          </span>
-
-          <a
-            href="${escapeAttribute(resourceURL)}"
-            class="material-btn"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Resource
-            <span>→</span>
-          </a>
-
-        </div>
-
-      `;
-
-    materialContainer.appendChild(card);
-  });
-}
-
-// ======================================================
-// MATERIAL TYPE
-// ======================================================
-
-function formatMaterialType(type) {
-  const normalized = normalize(type);
-
-  const typeMap = {
-    notes: 'Notes',
-
-    'important-questions': 'Important Questions',
-
-    'study-material': 'Study Material',
-
-    assignment: 'Assignment',
-
-    'previous-year': 'Previous Year Questions',
-  };
-
-  return typeMap[normalized] || type || 'Study Material';
-}
-
-// ======================================================
-// SEARCH
-// ======================================================
-
-materialSearch?.addEventListener('input', renderMaterials);
-
-// ======================================================
-// FILTER
-// ======================================================
-
-materialTypeFilter?.addEventListener('change', renderMaterials);
-
-// ======================================================
-// SECURITY HELPERS
-// ======================================================
-
-function escapeHTML(value) {
-  const div = document.createElement('div');
-
-  div.textContent = String(value);
-
-  return div.innerHTML;
-}
-
-function escapeAttribute(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-// ======================================================
-// VALIDATE PAGE
-// ======================================================
-
-if (selectedClass && selectedSubject && selectedChapter) {
-  loadMaterials();
-} else {
-  materialResultCount.textContent = 'Invalid chapter selection';
-
-  materialContainer.innerHTML = `
-    <div class="materials-error">
-
-      <div class="state-icon">!</div>
 
       <h3>
-        Invalid chapter
+        ${title}
       </h3>
 
-      <p>
-        Please select a chapter from
-        the chapters page.
+
+      <p class="material-description">
+        ${description}
       </p>
 
-      <a
-        href="index.html"
-        class="retry-btn"
-      >
-        Back to Home
-      </a>
 
-    </div>
+      <div class="card-meta">
+
+        <div class="meta-item">
+          <span>🎓</span>
+          <span>${className}</span>
+        </div>
+
+
+        <div class="meta-item">
+          <span>📚</span>
+          <span>${subjectName}</span>
+        </div>
+
+
+        <div class="meta-item">
+          <span>◷</span>
+          <span>${date}</span>
+        </div>
+
+      </div>
+
+
+      ${actionHTML}
+
+    </article>
+
   `;
 }
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+searchInput.addEventListener('input', applyFilters);
+
+/* =========================================================
+   TYPE FILTER
+========================================================= */
+
+typeFilter.addEventListener('change', applyFilters);
+
+/* =========================================================
+   RETRY
+========================================================= */
+
+retryBtn.addEventListener('click', loadMaterials);
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+setupPage();
+
+loadMaterials();

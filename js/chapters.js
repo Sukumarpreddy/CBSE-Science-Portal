@@ -1,29 +1,43 @@
-// ========================================
-// GET URL PARAMETERS
-// ========================================
+/* =========================================================
+   CBSE SCIENCE PORTAL
+   CHAPTERS
+========================================================= */
+
+/* =========================================================
+   URL PARAMETERS
+========================================================= */
 
 const params = new URLSearchParams(window.location.search);
 
 const selectedClass = params.get('class');
+
 const selectedSubject = params.get('subject');
 
-// ========================================
-// PAGE ELEMENTS
-// ========================================
-
-const pageDescription = document.getElementById('pageDescription');
-
-const subjectTitle = document.getElementById('subjectTitle');
-
-const chapterContainer = document.getElementById('chapterContainer');
-
-const subjectBreadcrumb = document.getElementById('subjectBreadcrumb');
+/* =========================================================
+   DOM
+========================================================= */
 
 const classBreadcrumbLink = document.getElementById('classBreadcrumbLink');
 
-// ========================================
-// SUBJECT NAMES
-// ========================================
+const subjectBreadcrumb = document.getElementById('subjectBreadcrumb');
+
+const subjectTitle = document.getElementById('subjectTitle');
+
+const pageDescription = document.getElementById('pageDescription');
+
+const classBadge = document.getElementById('classBadge');
+
+const chapterCount = document.getElementById('chapterCount');
+
+const chapterContainer = document.getElementById('chapterContainer');
+
+const chapterSearch = document.getElementById('chapterSearch');
+
+const emptyState = document.getElementById('emptyState');
+
+/* =========================================================
+   SUBJECT NAMES
+========================================================= */
 
 const subjectNames = {
   physics: 'Physics',
@@ -37,428 +51,361 @@ const subjectNames = {
   'computer-science': 'Computer Science',
 };
 
-// ========================================
-// CHAPTER DATA
-// ========================================
+/* =========================================================
+   CHAPTER DATA
+========================================================= */
 
 const chapters = {
-  // ========================================
-  // CLASS 11
-  // ========================================
-
   11: {
     physics: [
       'Physical World',
-
       'Units and Measurements',
-
       'Motion in a Straight Line',
-
       'Motion in a Plane',
-
       'Laws of Motion',
-
       'Work, Energy and Power',
-
       'System of Particles and Rotational Motion',
-
       'Gravitation',
-
       'Mechanical Properties of Solids',
-
       'Mechanical Properties of Fluids',
-
       'Thermal Properties of Matter',
-
       'Thermodynamics',
-
       'Kinetic Theory',
-
       'Oscillations',
-
       'Waves',
     ],
 
     chemistry: [
       'Some Basic Concepts of Chemistry',
-
       'Structure of Atom',
-
-      'Classification of Elements and Periodicity',
-
+      'Classification of Elements and Periodicity in Properties',
       'Chemical Bonding and Molecular Structure',
-
       'Thermodynamics',
-
       'Equilibrium',
-
       'Redox Reactions',
-
-      'Organic Chemistry – Basic Principles',
-
+      'Organic Chemistry – Some Basic Principles and Techniques',
       'Hydrocarbons',
-
-      'Some Basic Principles of Organic Chemistry',
     ],
 
     mathematics: [
       'Sets',
-
       'Relations and Functions',
-
       'Trigonometric Functions',
-
+      'Principle of Mathematical Induction',
       'Complex Numbers and Quadratic Equations',
-
       'Linear Inequalities',
-
       'Permutations and Combinations',
-
       'Binomial Theorem',
-
       'Sequences and Series',
-
       'Straight Lines',
-
       'Conic Sections',
-
       'Introduction to Three Dimensional Geometry',
-
       'Limits and Derivatives',
-
       'Statistics',
-
       'Probability',
     ],
 
     biology: [
       'The Living World',
-
       'Biological Classification',
-
       'Plant Kingdom',
-
       'Animal Kingdom',
-
       'Morphology of Flowering Plants',
-
       'Anatomy of Flowering Plants',
-
       'Structural Organisation in Animals',
-
       'Cell: The Unit of Life',
-
       'Biomolecules',
-
       'Cell Cycle and Cell Division',
-
       'Transport in Plants',
-
       'Mineral Nutrition',
-
-      'Photosynthesis in Plants',
-
+      'Photosynthesis in Higher Plants',
       'Respiration in Plants',
-
       'Plant Growth and Development',
-
       'Digestion and Absorption',
-
       'Breathing and Exchange of Gases',
-
       'Body Fluids and Circulation',
-
       'Excretory Products and their Elimination',
-
       'Locomotion and Movement',
-
       'Neural Control and Coordination',
-
       'Chemical Coordination and Integration',
     ],
 
     'computer-science': [
       'Computer Systems',
-
-      'Python Programming',
-
-      'Data Representation',
-
-      'Boolean Logic',
-
+      'Encoding Schemes and Number System',
+      'Emerging Trends',
+      'Introduction to Python',
+      'Getting Started with Python',
+      'Python Basics',
       'Data Handling',
-
       'Society, Law and Ethics',
     ],
   },
 
-  // ========================================
-  // CLASS 12
-  // ========================================
-
   12: {
     physics: [
       'Electric Charges and Fields',
-
       'Electrostatic Potential and Capacitance',
-
       'Current Electricity',
-
       'Moving Charges and Magnetism',
-
       'Magnetism and Matter',
-
       'Electromagnetic Induction',
-
       'Alternating Current',
-
       'Electromagnetic Waves',
-
       'Ray Optics and Optical Instruments',
-
       'Wave Optics',
-
       'Dual Nature of Radiation and Matter',
-
       'Atoms',
-
       'Nuclei',
-
       'Semiconductor Electronics',
     ],
 
     chemistry: [
       'Solutions',
-
       'Electrochemistry',
-
       'Chemical Kinetics',
-
-      'The d- and f-Block Elements',
-
+      'd- and f-Block Elements',
       'Coordination Compounds',
-
       'Haloalkanes and Haloarenes',
-
       'Alcohols, Phenols and Ethers',
-
       'Aldehydes, Ketones and Carboxylic Acids',
-
       'Amines',
-
       'Biomolecules',
     ],
 
     mathematics: [
       'Relations and Functions',
-
       'Inverse Trigonometric Functions',
-
       'Matrices',
-
       'Determinants',
-
       'Continuity and Differentiability',
-
       'Application of Derivatives',
-
       'Integrals',
-
       'Application of Integrals',
-
       'Differential Equations',
-
       'Vector Algebra',
-
       'Three Dimensional Geometry',
-
       'Linear Programming',
-
       'Probability',
     ],
 
     biology: [
       'Sexual Reproduction in Flowering Plants',
-
       'Human Reproduction',
-
       'Reproductive Health',
-
       'Principles of Inheritance and Variation',
-
       'Molecular Basis of Inheritance',
-
       'Evolution',
-
       'Human Health and Disease',
-
       'Strategies for Enhancement in Food Production',
-
       'Microbes in Human Welfare',
-
       'Biotechnology: Principles and Processes',
-
       'Biotechnology and its Applications',
-
       'Organisms and Populations',
-
       'Ecosystem',
-
       'Biodiversity and Conservation',
+      'Environmental Issues',
     ],
 
     'computer-science': [
       'Computer Networks',
-
+      'Data Management',
       'Database Concepts',
-
-      'SQL',
-
-      'Python Programming',
-
-      'Data Structures',
-
-      'Computer Security',
-
-      'Society, Law and Ethics',
+      'Introduction to SQL',
+      'Computer Science Applications',
+      'Societal Impacts',
     ],
   },
 };
 
-// ========================================
-// VALIDATE SELECTION
-// ========================================
+/* =========================================================
+   HELPERS
+========================================================= */
 
-if (!selectedClass || !selectedSubject) {
-  subjectTitle.textContent = 'Invalid Selection';
+function normalize(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase();
+}
 
-  pageDescription.textContent = 'Please select a class and subject.';
+function escapeHTML(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
-  subjectBreadcrumb.textContent = 'Subject';
-} else {
-  // Get subject name
+/* =========================================================
+   GET SUBJECT
+========================================================= */
 
-  const subjectName = subjectNames[selectedSubject] || selectedSubject;
+const subjectKey = normalize(selectedSubject);
 
-  // ========================================
-  // UPDATE PAGE TITLE
-  // ========================================
+const subjectName = subjectNames[subjectKey] || 'Science';
 
-  subjectTitle.textContent = subjectName;
+/* =========================================================
+   GET CHAPTERS
+========================================================= */
 
-  // ========================================
-  // UPDATE DESCRIPTION
-  // ========================================
+function getCurrentChapters() {
+  if (!selectedClass) {
+    return [];
+  }
 
-  pageDescription.textContent = `Explore ${subjectName} chapters and study materials.`;
+  const classData = chapters[String(selectedClass)];
 
-  // ========================================
-  // UPDATE BREADCRUMB
-  // ========================================
+  if (!classData) {
+    return [];
+  }
+
+  return classData[subjectKey] || [];
+}
+
+/* =========================================================
+   PAGE SETUP
+========================================================= */
+
+function setupPage() {
+  classBadge.textContent = selectedClass || '--';
 
   subjectBreadcrumb.textContent = subjectName;
 
-  classBreadcrumbLink.textContent = `Class ${selectedClass}`;
+  subjectTitle.textContent = subjectName;
 
-  classBreadcrumbLink.href = `class.html?class=${selectedClass}`;
+  pageDescription.textContent = `Explore ${subjectName} chapters for Class ${selectedClass || ''} and access the available study resources.`;
+
+  document.title = `${subjectName} Chapters | CBSE Science Portal`;
+
+  if (selectedClass) {
+    classBreadcrumbLink.textContent = `Class ${selectedClass}`;
+
+    classBreadcrumbLink.href = `class.html?class=${encodeURIComponent(
+      selectedClass,
+    )}`;
+  } else {
+    classBreadcrumbLink.textContent = 'Classes';
+
+    classBreadcrumbLink.href = 'class.html?class=11';
+  }
 }
 
-// ========================================
-// GET CHAPTER LIST
-// ========================================
+/* =========================================================
+   RENDER CHAPTERS
+========================================================= */
 
-const selectedChapters = chapters[selectedClass]?.[selectedSubject];
+function renderChapters(chapterList = getCurrentChapters()) {
+  if (!chapterList.length) {
+    chapterContainer.innerHTML = '';
 
-// ========================================
-// CHECK CHAPTER DATA
-// ========================================
+    emptyState.hidden = false;
 
-if (!selectedChapters) {
-  chapterContainer.innerHTML = `
+    chapterCount.textContent = 'No chapters available.';
 
-        <div class="no-chapters">
+    return;
+  }
 
-            <h3>
-                Chapters not available
-            </h3>
+  emptyState.hidden = true;
 
-            <p>
-                Chapter information for this
-                subject is not available yet.
-            </p>
+  chapterCount.textContent = `${chapterList.length} ${
+    chapterList.length === 1 ? 'chapter' : 'chapters'
+  } available`;
 
-        </div>
+  chapterContainer.innerHTML = chapterList
+    .map((chapter, index) => {
+      const chapterNumber = index + 1;
 
-    `;
+      return `
+
+                        <a
+                            class="chapter-card"
+                            href="materials.html?class=${encodeURIComponent(
+                              selectedClass,
+                            )}&subject=${encodeURIComponent(
+                              selectedSubject,
+                            )}&chapter=${chapterNumber}"
+                        >
+
+                            <div>
+
+                                <div class="chapter-number">
+
+                                    <span
+                                        class="chapter-index"
+                                    >
+                                        ${String(chapterNumber).padStart(
+                                          2,
+                                          '0',
+                                        )}
+                                    </span>
+
+                                    <span
+                                        class="chapter-arrow"
+                                    >
+                                        →
+                                    </span>
+
+                                </div>
+
+
+                                <h3>
+                                    ${escapeHTML(chapter)}
+                                </h3>
+
+                            </div>
+
+
+                            <div
+                                class="chapter-card-footer"
+                            >
+
+                                <span>
+                                    Chapter
+                                    ${chapterNumber}
+                                </span>
+
+                                <span>
+                                    View materials
+                                </span>
+
+                            </div>
+
+                        </a>
+
+                    `;
+    })
+    .join('');
 }
 
-// ========================================
-// DISPLAY CHAPTERS
-// ========================================
-else {
-  selectedChapters.forEach(function (chapter, index) {
-    // ========================================
-    // CREATE CARD
-    // ========================================
+/* =========================================================
+   SEARCH
+========================================================= */
 
-    const chapterCard = document.createElement('div');
+function searchChapters() {
+  const searchTerm = normalize(chapterSearch.value);
 
-    chapterCard.className = 'chapter-card';
+  const allChapters = getCurrentChapters();
 
-    // ========================================
-    // CHAPTER NUMBER
-    // ========================================
+  if (!searchTerm) {
+    renderChapters(allChapters);
 
-    const chapterNumber = String(index + 1).padStart(2, '0');
+    return;
+  }
 
-    // ========================================
-    // MATERIAL URL
-    // ========================================
+  const filtered = allChapters.filter((chapter) =>
+    normalize(chapter).includes(searchTerm),
+  );
 
-    const materialURL = `materials.html?class=${selectedClass}&subject=${selectedSubject}&chapter=${index + 1}`;
-
-    // ========================================
-    // CARD HTML
-    // ========================================
-
-    chapterCard.innerHTML = `
-
-                <div class="chapter-number">
-                    ${chapterNumber}
-                </div>
-
-
-                <div class="chapter-content">
-
-                    <h3>
-                        ${chapter}
-                    </h3>
-
-                    <p>
-                        Notes • Questions • Study Material
-                    </p>
-
-                    <a
-                        href="${materialURL}"
-                        class="chapter-link"
-                    >
-                        Explore Chapter
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-
-                <div class="chapter-arrow">
-                    →
-                </div>
-
-            `;
-
-    // ========================================
-    // ADD CARD TO PAGE
-    // ========================================
-
-    chapterContainer.appendChild(chapterCard);
-  });
+  renderChapters(filtered);
 }
+
+chapterSearch.addEventListener('input', searchChapters);
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+setupPage();
+
+renderChapters();

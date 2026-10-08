@@ -1,59 +1,52 @@
-/* =========================================
-   ADMIN FACULTY MANAGEMENT
-   CBSE SCIENCE PORTAL
-========================================= */
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  createUserWithEmailAndPassword,
+  signOut as signOutFaculty,
+} from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js';
 
 import {
   getFirestore,
   collection,
   getDocs,
   getDoc,
-  addDoc,
   deleteDoc,
   doc,
+  setDoc,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
 
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-} from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js';
-
 import { app } from './firebase.js';
 
-/* =========================================
-   FIREBASE
-========================================= */
+import {
+  initializeApp,
+  getApps,
+} from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
 
+// ======================================================
+// FIREBASE
+// ======================================================
+
+const adminAuth = getAuth(app);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
-/* =========================================
-   DOM
-========================================= */
+// ======================================================
+// DOM ELEMENTS — MATCHES YOUR CURRENT HTML
+// ======================================================
 
 const adminEmail = document.getElementById('adminEmail');
 
 const totalFaculty = document.getElementById('totalFaculty');
-
 const activeFaculty = document.getElementById('activeFaculty');
-
 const facultyMaterials = document.getElementById('facultyMaterials');
 
 const facultyContainer = document.getElementById('facultyContainer');
-
-const resultCount = document.getElementById('resultCount');
-
 const searchInput = document.getElementById('searchInput');
 
-const logoutBtn = document.getElementById('logoutBtn');
-
-/* Modal */
+const openAddFacultyBtn = document.getElementById('openAddFacultyBtn');
 
 const facultyModal = document.getElementById('facultyModal');
-
-const openAddFacultyBtn = document.getElementById('openAddFacultyBtn');
 
 const closeModalBtn = document.getElementById('closeModalBtn');
 
@@ -71,237 +64,316 @@ const formMessage = document.getElementById('formMessage');
 
 const saveFacultyBtn = document.getElementById('saveFacultyBtn');
 
+const resultCount = document.getElementById('resultCount');
+
 const emptyState = document.getElementById('emptyState');
 
 const errorState = document.getElementById('errorState');
 
 const errorMessage = document.getElementById('errorMessage');
 
-/* =========================================
-   STATE
-========================================= */
+const logoutBtn = document.getElementById('logoutBtn');
 
-let facultyMembers = [];
+// ======================================================
+// DATA
+// ======================================================
 
-let materialCounts = {};
+let allFaculty = [];
+let allMaterials = [];
 
-let currentAdmin = null;
+// ======================================================
+// CREATE MISSING PASSWORD + SUBJECT FIELDS
+// ======================================================
+// Your current HTML doesn't contain these fields.
+// We create them dynamically so you don't have to
+// replace the whole HTML right now.
+// ======================================================
 
-/* =========================================
-   AUTH
-========================================= */
+let facultyPasswordInput = null;
+let facultySubjectInput = null;
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'login.html';
-
+function createMissingFormFields() {
+  if (!facultyForm) {
     return;
   }
 
-  currentAdmin = user;
+  // Find the form message
+  const messageElement = document.getElementById('formMessage');
 
-  console.log('Admin logged in:', user.email);
+  // ----------------------------
+  // Password field
+  // ----------------------------
+
+  if (!document.getElementById('facultyPasswordInput')) {
+    const passwordGroup = document.createElement('div');
+
+    passwordGroup.className = 'form-group';
+
+    passwordGroup.innerHTML = `
+      <label for="facultyPasswordInput">
+        Temporary Password
+      </label>
+
+      <input
+        type="password"
+        id="facultyPasswordInput"
+        placeholder="Enter password (minimum 6 characters)"
+        minlength="6"
+        autocomplete="new-password"
+        required
+      />
+
+      <small style="
+        display:block;
+        margin-top:6px;
+        color:#64748b;
+        font-size:12px;
+      ">
+        Give this password to the faculty member. They can use it to sign in.
+      </small>
+    `;
+
+    if (messageElement) {
+      facultyForm.insertBefore(passwordGroup, messageElement);
+    } else {
+      facultyForm.appendChild(passwordGroup);
+    }
+  }
+
+  // ----------------------------
+  // Subject field
+  // ----------------------------
+
+  if (!document.getElementById('facultySubjectInput')) {
+    const subjectGroup = document.createElement('div');
+
+    subjectGroup.className = 'form-group';
+
+    subjectGroup.innerHTML = `
+      <label for="facultySubjectInput">
+        Subject
+      </label>
+
+      <select
+        id="facultySubjectInput"
+        required
+      >
+        <option value="">Select subject</option>
+        <option value="Physics">Physics</option>
+        <option value="Chemistry">Chemistry</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Biology">Biology</option>
+        <option value="Computer Science">Computer Science</option>
+      </select>
+    `;
+
+    if (messageElement) {
+      facultyForm.insertBefore(subjectGroup, messageElement);
+    } else {
+      facultyForm.appendChild(subjectGroup);
+    }
+  }
+
+  facultyPasswordInput = document.getElementById('facultyPasswordInput');
+
+  facultySubjectInput = document.getElementById('facultySubjectInput');
+}
+
+createMissingFormFields();
+
+// ======================================================
+// HTML ESCAPE
+// ======================================================
+
+function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ======================================================
+// AUTH CHECK
+// ======================================================
+
+onAuthStateChanged(adminAuth, async (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
 
   try {
-    const isAdmin = await checkAdminRole(user.uid);
+    const adminRef = doc(db, 'users', user.uid);
 
-    if (!isAdmin) {
-      alert('You do not have permission to access Faculty Management.');
+    const adminSnapshot = await getDoc(adminRef);
 
-      await signOut(auth);
+    if (!adminSnapshot.exists()) {
+      await signOut(adminAuth);
 
       window.location.href = 'login.html';
 
       return;
     }
 
-    /* Display admin */
+    const adminData = adminSnapshot.data();
+
+    if (adminData.role !== 'admin') {
+      alert('Access denied. Admin account required.');
+
+      await signOut(adminAuth);
+
+      window.location.href = 'login.html';
+
+      return;
+    }
+
+    // ----------------------------
+    // Admin information
+    // ----------------------------
 
     if (adminEmail) {
       adminEmail.textContent = user.email || 'Administrator';
     }
 
-    /* Load page */
+    // ----------------------------
+    // Load data
+    // ----------------------------
 
-    await loadPage();
+    await loadFacultyData();
   } catch (error) {
-    console.error('Admin page error:', error);
+    console.error('Admin authentication error:', error);
 
-    showError(getFirebaseErrorMessage(error));
+    alert('Unable to verify administrator access.');
+
+    await signOut(adminAuth);
+
+    window.location.href = 'login.html';
   }
 });
 
-/* =========================================
-   CHECK ADMIN ROLE
-========================================= */
+// ======================================================
+// LOAD FACULTY + MATERIALS
+// ======================================================
 
-async function checkAdminRole(uid) {
+async function loadFacultyData() {
   try {
-    const userRef = doc(db, 'users', uid);
+    const usersSnapshot = await getDocs(collection(db, 'users'));
 
-    const snapshot = await getDoc(userRef);
+    const materialsSnapshot = await getDocs(collection(db, 'materials'));
 
-    if (!snapshot.exists()) {
-      console.error('Admin profile does not exist.');
+    // ----------------------------
+    // Faculty
+    // ----------------------------
 
-      return false;
-    }
+    allFaculty = [];
 
-    const data = snapshot.data();
-
-    console.log('Current role:', data.role);
-
-    return data.role === 'admin';
-  } catch (error) {
-    console.error('Role check failed:', error);
-
-    throw error;
-  }
-}
-
-/* =========================================
-   LOAD PAGE
-========================================= */
-
-async function loadPage() {
-  try {
-    await loadMaterials();
-
-    await loadFaculty();
-
-    updateStatistics();
-
-    renderFaculty(facultyMembers);
-  } catch (error) {
-    console.error('Page loading failed:', error);
-
-    showError(getFirebaseErrorMessage(error));
-  }
-}
-
-/* =========================================
-   LOAD MATERIALS
-========================================= */
-
-async function loadMaterials() {
-  try {
-    const snapshot = await getDocs(collection(db, 'materials'));
-
-    materialCounts = {};
-
-    let total = 0;
-
-    snapshot.forEach((document) => {
-      const material = document.data();
-
-      const uid = material.uploadedByUid;
-
-      if (uid) {
-        if (!materialCounts[uid]) {
-          materialCounts[uid] = 0;
-        }
-
-        materialCounts[uid]++;
-      }
-
-      total++;
-    });
-
-    if (facultyMaterials) {
-      facultyMaterials.textContent = total;
-    }
-  } catch (error) {
-    console.error('Materials loading failed:', error);
-
-    throw error;
-  }
-}
-
-/* =========================================
-   LOAD FACULTY
-========================================= */
-
-async function loadFaculty() {
-  try {
-    const snapshot = await getDocs(collection(db, 'users'));
-
-    facultyMembers = [];
-
-    snapshot.forEach((document) => {
-      const data = document.data();
+    usersSnapshot.forEach((userDoc) => {
+      const data = userDoc.data();
 
       if (data.role === 'faculty') {
-        facultyMembers.push({
-          id: document.id,
-
+        allFaculty.push({
+          id: userDoc.id,
           ...data,
         });
       }
     });
 
-    console.log('Faculty members:', facultyMembers);
+    // ----------------------------
+    // Materials
+    // ----------------------------
 
-    /* Sort by name */
+    allMaterials = [];
 
-    facultyMembers.sort((a, b) =>
-      String(a.name || a.email || '').localeCompare(
-        String(b.name || b.email || ''),
-      ),
-    );
+    materialsSnapshot.forEach((materialDoc) => {
+      allMaterials.push({
+        id: materialDoc.id,
+        ...materialDoc.data(),
+      });
+    });
+
+    // ----------------------------
+    // Update UI
+    // ----------------------------
+
+    updateStatistics();
+
+    renderFaculty(allFaculty);
   } catch (error) {
-    console.error('Faculty loading failed:', error);
+    console.error('Failed to load faculty:', error);
 
-    throw error;
+    if (errorState) {
+      errorState.classList.remove('hidden');
+    }
+
+    if (errorMessage) {
+      errorMessage.textContent =
+        error.message || 'Unable to load faculty data.';
+    }
+
+    if (facultyContainer) {
+      facultyContainer.innerHTML = '';
+    }
   }
 }
 
-/* =========================================
-   STATISTICS
-========================================= */
+// ======================================================
+// STATISTICS
+// ======================================================
 
 function updateStatistics() {
-  const total = facultyMembers.length;
-
-  const active = facultyMembers.filter(
+  const activeCount = allFaculty.filter(
     (faculty) => faculty.status !== 'inactive',
   ).length;
 
   if (totalFaculty) {
-    totalFaculty.textContent = total;
+    totalFaculty.textContent = allFaculty.length;
   }
 
   if (activeFaculty) {
-    activeFaculty.textContent = active;
+    activeFaculty.textContent = activeCount;
   }
 
-  const totalMaterialCount = Object.values(materialCounts).reduce(
-    (sum, value) => sum + value,
-    0,
-  );
-
   if (facultyMaterials) {
-    facultyMaterials.textContent = totalMaterialCount;
+    facultyMaterials.textContent = allMaterials.length;
+  }
+
+  if (resultCount) {
+    resultCount.textContent = `${allFaculty.length} ${
+      allFaculty.length === 1 ? 'faculty' : 'faculty'
+    }`;
   }
 }
 
-/* =========================================
-   RENDER FACULTY
-========================================= */
+// ======================================================
+// RENDER FACULTY
+// ======================================================
 
-function renderFaculty(list) {
+function renderFaculty(facultyList) {
   if (!facultyContainer) {
     return;
   }
 
+  // ----------------------------
+  // Result count
+  // ----------------------------
+
   if (resultCount) {
-    resultCount.textContent = `${list.length} ${
-      list.length === 1 ? 'faculty' : 'faculty members'
+    resultCount.textContent = `${facultyList.length} ${
+      facultyList.length === 1 ? 'faculty' : 'faculty'
     }`;
   }
 
-  /* Empty */
+  // ----------------------------
+  // Empty state
+  // ----------------------------
 
-  if (list.length === 0) {
+  if (facultyList.length === 0) {
     facultyContainer.innerHTML = '';
 
     if (emptyState) {
@@ -309,409 +381,475 @@ function renderFaculty(list) {
     }
 
     return;
-  } else {
-    if (emptyState) {
-      emptyState.classList.add('hidden');
-    }
   }
 
-  facultyContainer.innerHTML = list.map(createFacultyRow).join('');
-}
+  if (emptyState) {
+    emptyState.classList.add('hidden');
+  }
 
-/* =========================================
-   CREATE FACULTY ROW
-========================================= */
+  // ----------------------------
+  // Render table rows
+  // ----------------------------
 
-function createFacultyRow(faculty) {
-  const name = faculty.name || 'Faculty Member';
+  facultyContainer.innerHTML = facultyList
+    .map((faculty) => {
+      const materialCount = allMaterials.filter(
+        (material) => material.uploadedByUid === faculty.id,
+      ).length;
 
-  const email = faculty.email || 'No email';
+      const status = faculty.status === 'inactive' ? 'Inactive' : 'Active';
 
-  const initial = getInitial(name, email);
+      const firstLetter = (faculty.name || faculty.email || 'F')
+        .charAt(0)
+        .toUpperCase();
 
-  const materials = materialCounts[faculty.id] || 0;
+      return `
+          <tr>
 
-  const role = faculty.role || 'faculty';
-
-  const status = faculty.status === 'inactive' ? 'Inactive' : 'Active';
-
-  return `
-
-        <tr>
+            <!-- FACULTY -->
 
             <td>
 
-                <div class="faculty-person">
+              <div class="faculty-person">
 
-                    <div class="faculty-avatar">
+                <div class="faculty-avatar">
+                  ${escapeHTML(firstLetter)}
+                </div>
 
-                        ${escapeHTML(initial)}
+                <div class="faculty-name">
 
-                    </div>
+                  <strong>
+                    ${escapeHTML(faculty.name || 'Unnamed Faculty')}
+                  </strong>
 
-
-                    <div class="faculty-name">
-
-                        <strong>
-                            ${escapeHTML(name)}
-                        </strong>
-
-                        <small>
-                            Faculty ID:
-                            ${escapeHTML(faculty.id)}
-                        </small>
-
-                    </div>
+                  <small>
+                    ${escapeHTML(faculty.subject || 'Subject not assigned')}
+                  </small>
 
                 </div>
 
+              </div>
+
             </td>
 
+
+            <!-- EMAIL -->
+
+            <td class="email-cell">
+              ${escapeHTML(faculty.email || 'No email')}
+            </td>
+
+
+            <!-- ROLE -->
 
             <td>
 
-                <span class="email-cell">
-
-                    ${escapeHTML(email)}
-
-                </span>
+              <span class="role-badge">
+                Faculty
+              </span>
 
             </td>
 
+
+            <!-- MATERIALS -->
 
             <td>
 
-                <span class="role-badge">
-
-                    ${escapeHTML(role)}
-
-                </span>
+              <span class="material-count">
+                ${materialCount}
+              </span>
 
             </td>
 
+
+            <!-- STATUS -->
 
             <td>
 
-                <span class="material-count">
+              <span class="status-badge ${status.toLowerCase()}">
 
-                    ${materials}
+                <span class="status-dot"></span>
 
-                </span>
+                ${status}
+
+              </span>
 
             </td>
 
+
+            <!-- ACTION -->
 
             <td>
 
-                <span class="status-badge">
-
-                    <span class="status-dot"></span>
-
-                    ${status}
-
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <button
-                    type="button"
-                    class="delete-button"
-                    data-id="${escapeAttribute(faculty.id)}"
-                >
-                    Remove
-                </button>
+              <button
+                type="button"
+                class="delete-button"
+                data-id="${escapeHTML(faculty.id)}"
+                data-name="${escapeHTML(
+                  faculty.name || faculty.email || 'Faculty',
+                )}"
+              >
+                Remove
+              </button>
 
             </td>
 
-        </tr>
+          </tr>
+        `;
+    })
+    .join('');
 
-    `;
+  // ----------------------------
+  // Remove buttons
+  // ----------------------------
+
+  document.querySelectorAll('.delete-button').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const facultyId = button.dataset.id;
+
+      const facultyName = button.dataset.name;
+
+      await removeFaculty(facultyId, facultyName);
+    });
+  });
 }
 
-/* =========================================
-   SEARCH
-========================================= */
+// ======================================================
+// SEARCH
+// ======================================================
 
 if (searchInput) {
   searchInput.addEventListener('input', () => {
-    const search = searchInput.value.trim().toLowerCase();
+    const searchTerm = searchInput.value.trim().toLowerCase();
 
-    if (!search) {
-      renderFaculty(facultyMembers);
+    if (!searchTerm) {
+      renderFaculty(allFaculty);
 
       return;
     }
 
-    const filtered = facultyMembers.filter((faculty) => {
-      const name = String(faculty.name || '').toLowerCase();
+    const filtered = allFaculty.filter((faculty) => {
+      const name = (faculty.name || '').toLowerCase();
 
-      const email = String(faculty.email || '').toLowerCase();
+      const email = (faculty.email || '').toLowerCase();
 
-      return name.includes(search) || email.includes(search);
+      const subject = (faculty.subject || '').toLowerCase();
+
+      return (
+        name.includes(searchTerm) ||
+        email.includes(searchTerm) ||
+        subject.includes(searchTerm)
+      );
     });
 
     renderFaculty(filtered);
   });
 }
 
-/* =========================================
-   OPEN MODAL
-========================================= */
+// ======================================================
+// OPEN MODAL
+// ======================================================
 
 if (openAddFacultyBtn) {
   openAddFacultyBtn.addEventListener('click', () => {
-    openModal();
+    openFacultyModal();
   });
 }
 
-/* =========================================
-   CLOSE MODAL
-========================================= */
+function openFacultyModal() {
+  if (!facultyModal) {
+    return;
+  }
+
+  // Make sure dynamically created fields exist
+  createMissingFormFields();
+
+  // Reset form
+  if (facultyForm) {
+    facultyForm.reset();
+  }
+
+  // Change description
+  const description = facultyModal.querySelector('.modal-description');
+
+  if (description) {
+    description.textContent =
+      'Create a Firebase Authentication account and faculty profile for the portal.';
+  }
+
+  // Clear message
+  if (formMessage) {
+    formMessage.textContent = '';
+
+    formMessage.className = 'form-message hidden';
+  }
+
+  // Open
+  facultyModal.classList.remove('hidden');
+
+  facultyModal.classList.add('active');
+
+  setTimeout(() => {
+    if (facultyNameInput) {
+      facultyNameInput.focus();
+    }
+  }, 100);
+}
+
+// ======================================================
+// CLOSE MODAL
+// ======================================================
+
+function closeFacultyModal() {
+  if (!facultyModal) {
+    return;
+  }
+
+  facultyModal.classList.remove('active');
+
+  facultyModal.classList.add('hidden');
+
+  if (facultyForm) {
+    facultyForm.reset();
+  }
+
+  if (formMessage) {
+    formMessage.textContent = '';
+
+    formMessage.className = 'form-message hidden';
+  }
+}
 
 if (closeModalBtn) {
-  closeModalBtn.addEventListener('click', closeModal);
+  closeModalBtn.addEventListener('click', closeFacultyModal);
 }
 
 if (cancelModalBtn) {
-  cancelModalBtn.addEventListener('click', closeModal);
+  cancelModalBtn.addEventListener('click', closeFacultyModal);
 }
 
-/* Click outside */
+// ======================================================
+// CLOSE WHEN CLICKING OUTSIDE
+// ======================================================
 
 if (facultyModal) {
   facultyModal.addEventListener('click', (event) => {
     if (event.target === facultyModal) {
-      closeModal();
+      closeFacultyModal();
     }
   });
 }
 
-/* Escape key */
-
-document.addEventListener('keydown', (event) => {
-  if (
-    event.key === 'Escape' &&
-    facultyModal &&
-    !facultyModal.classList.contains('hidden')
-  ) {
-    closeModal();
-  }
-});
-
-/* =========================================
-   MODAL FUNCTIONS
-========================================= */
-
-function openModal() {
-  if (!facultyModal) {
-    return;
-  }
-
-  facultyModal.classList.remove('hidden');
-
-  clearFormMessage();
-
-  if (facultyForm) {
-    facultyForm.reset();
-  }
-
-  setTimeout(() => {
-    facultyNameInput?.focus();
-  }, 50);
-}
-
-function closeModal() {
-  if (!facultyModal) {
-    return;
-  }
-
-  facultyModal.classList.add('hidden');
-
-  clearFormMessage();
-
-  if (facultyForm) {
-    facultyForm.reset();
-  }
-}
-
-/* =========================================
-   ADD FACULTY
-========================================= */
+// ======================================================
+// CREATE FACULTY ACCOUNT
+// ======================================================
 
 if (facultyForm) {
   facultyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    // Make sure fields exist
+    createMissingFormFields();
+
     const name = facultyNameInput.value.trim();
 
     const email = facultyEmailInput.value.trim().toLowerCase();
 
-    const role = facultyRoleInput.value;
+    const password = facultyPasswordInput.value;
 
-    if (!name) {
-      showFormMessage('Please enter the faculty name.', 'error');
+    const subject = facultySubjectInput.value;
+
+    // ----------------------------
+    // Validation
+    // ----------------------------
+
+    if (!name || !email || !password || !subject) {
+      showFormMessage('Please fill in all required fields.', 'error');
 
       return;
     }
 
-    if (!email) {
-      showFormMessage('Please enter the faculty email.', 'error');
+    if (password.length < 6) {
+      showFormMessage('Password must contain at least 6 characters.', 'error');
 
       return;
     }
+
+    // ----------------------------
+    // Button
+    // ----------------------------
+
+    const submitButton =
+      saveFacultyBtn || facultyForm.querySelector('button[type="submit"]');
+
+    const originalText = submitButton
+      ? submitButton.textContent
+      : 'Save Faculty';
+
+    if (submitButton) {
+      submitButton.disabled = true;
+
+      submitButton.textContent = 'Creating Account...';
+    }
+
+    let facultyAuth = null;
 
     try {
-      setSavingState(true);
+      // ==================================================
+      // SECOND FIREBASE APP
+      // ==================================================
+      // This is important.
+      //
+      // The admin stays logged in while the faculty
+      // Firebase Auth account is created.
+      // ==================================================
 
-      /*
-                    Check whether a faculty
-                    profile with this email
-                    already exists.
-                */
+      const facultyAppName = 'facultyCreationApp';
 
-      const existing = facultyMembers.some(
-        (faculty) => String(faculty.email || '').toLowerCase() === email,
+      let facultyApp;
+
+      const existingApp = getApps().find(
+        (firebaseApp) => firebaseApp.name === facultyAppName,
       );
 
-      if (existing) {
-        showFormMessage(
-          'A faculty profile with this email already exists.',
-          'error',
-        );
-
-        setSavingState(false);
-
-        return;
+      if (existingApp) {
+        facultyApp = existingApp;
+      } else {
+        facultyApp = initializeApp(app.options, facultyAppName);
       }
 
-      /*
-                    Create Firestore profile.
+      facultyAuth = getAuth(facultyApp);
 
-                    NOTE:
-                    This does NOT create
-                    Firebase Authentication.
+      // ==================================================
+      // CREATE AUTH ACCOUNT
+      // ==================================================
 
-                    The actual Auth account
-                    should be created securely
-                    through Firebase Admin SDK
-                    or Firebase Console.
-                */
-
-      await addDoc(collection(db, 'users'), {
-        name,
-
+      const credential = await createUserWithEmailAndPassword(
+        facultyAuth,
         email,
+        password,
+      );
 
-        role,
+      const facultyUser = credential.user;
+
+      // ==================================================
+      // CREATE FIRESTORE PROFILE
+      // ==================================================
+      // IMPORTANT:
+      // Document ID = Firebase Auth UID
+      // ==================================================
+
+      await setDoc(doc(db, 'users', facultyUser.uid), {
+        uid: facultyUser.uid,
+
+        name: name,
+
+        email: email,
+
+        subject: subject,
+
+        role: 'faculty',
 
         status: 'active',
 
         createdAt: serverTimestamp(),
 
-        createdBy: currentAdmin.uid,
+        createdBy: adminAuth.currentUser.uid,
       });
 
-      showFormMessage('Faculty profile added successfully.', 'success');
+      // ==================================================
+      // SIGN OUT SECONDARY AUTH
+      // ==================================================
 
-      /*
-                    Reload faculty list
-                */
+      await signOutFaculty(facultyAuth);
 
-      await loadFaculty();
+      // ==================================================
+      // SUCCESS
+      // ==================================================
 
-      updateStatistics();
+      showFormMessage('Faculty account created successfully.', 'success');
 
-      renderFaculty(facultyMembers);
+      // Reload faculty directory
+      await loadFacultyData();
 
+      // Close after short delay
       setTimeout(() => {
-        closeModal();
-      }, 900);
+        closeFacultyModal();
+      }, 1200);
     } catch (error) {
-      console.error('Add faculty failed:', error);
+      console.error('Create faculty error:', error);
 
-      showFormMessage(getFirebaseErrorMessage(error), 'error');
+      let message = 'Unable to create faculty account.';
+
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          message = 'A Firebase account with this email already exists.';
+
+          break;
+
+        case 'auth/invalid-email':
+          message = 'Please enter a valid email address.';
+
+          break;
+
+        case 'auth/weak-password':
+          message = 'Password must contain at least 6 characters.';
+
+          break;
+
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+
+          break;
+
+        case 'permission-denied':
+
+        case 'firestore/permission-denied':
+          message = 'You do not have permission to create the faculty profile.';
+
+          break;
+
+        default:
+          if (
+            error.message &&
+            error.message.includes('Missing or insufficient permissions')
+          ) {
+            message =
+              'Firestore permission denied. Check your Firestore rules.';
+          }
+
+          break;
+      }
+
+      showFormMessage(message, 'error');
+
+      // If secondary Auth is active,
+      // sign it out so admin session remains clean.
+
+      if (facultyAuth) {
+        try {
+          await signOutFaculty(facultyAuth);
+        } catch (signOutError) {
+          console.warn('Secondary sign-out error:', signOutError);
+        }
+      }
     } finally {
-      setSavingState(false);
+      // ----------------------------
+      // Restore button
+      // ----------------------------
+
+      if (submitButton) {
+        submitButton.disabled = false;
+
+        submitButton.textContent = originalText;
+      }
     }
   });
 }
 
-/* =========================================
-   REMOVE FACULTY
-========================================= */
-
-if (facultyContainer) {
-  facultyContainer.addEventListener('click', async (event) => {
-    const button = event.target.closest('.delete-button');
-
-    if (!button) {
-      return;
-    }
-
-    const facultyId = button.dataset.id;
-
-    if (!facultyId) {
-      return;
-    }
-
-    const faculty = facultyMembers.find((item) => item.id === facultyId);
-
-    if (!faculty) {
-      return;
-    }
-
-    const confirmed = confirm(
-      `Remove ${faculty.name || faculty.email} from the faculty directory?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      button.disabled = true;
-
-      button.textContent = 'Removing...';
-
-      await deleteDoc(doc(db, 'users', facultyId));
-
-      facultyMembers = facultyMembers.filter((item) => item.id !== facultyId);
-
-      updateStatistics();
-
-      renderFaculty(facultyMembers);
-    } catch (error) {
-      console.error('Remove faculty failed:', error);
-
-      alert(getFirebaseErrorMessage(error));
-
-      button.disabled = false;
-
-      button.textContent = 'Remove';
-    }
-  });
-}
-
-/* =========================================
-   SAVING STATE
-========================================= */
-
-function setSavingState(saving) {
-  if (!saveFacultyBtn) {
-    return;
-  }
-
-  saveFacultyBtn.disabled = saving;
-
-  saveFacultyBtn.textContent = saving ? 'Saving...' : 'Save Faculty';
-}
-
-/* =========================================
-   FORM MESSAGE
-========================================= */
+// ======================================================
+// FORM MESSAGE
+// ======================================================
 
 function showFormMessage(message, type) {
   if (!formMessage) {
@@ -723,114 +861,44 @@ function showFormMessage(message, type) {
   formMessage.className = `form-message ${type}`;
 }
 
-function clearFormMessage() {
-  if (!formMessage) {
+// ======================================================
+// REMOVE FACULTY PROFILE
+// ======================================================
+
+async function removeFaculty(facultyId, facultyName) {
+  const confirmed = confirm(
+    `Remove ${facultyName} from the faculty directory?`,
+  );
+
+  if (!confirmed) {
     return;
   }
 
-  formMessage.textContent = '';
+  try {
+    await deleteDoc(doc(db, 'users', facultyId));
 
-  formMessage.className = 'form-message hidden';
-}
+    await loadFacultyData();
 
-/* =========================================
-   ERROR STATE
-========================================= */
+    alert('Faculty profile removed successfully.');
+  } catch (error) {
+    console.error('Remove faculty error:', error);
 
-function showError(message) {
-  if (!errorState) {
-    return;
-  }
-
-  if (errorMessage) {
-    errorMessage.textContent =
-      message || 'Please refresh the page and try again.';
-  }
-
-  errorState.classList.remove('hidden');
-
-  if (facultyContainer) {
-    facultyContainer.innerHTML = '';
+    alert('Unable to remove faculty profile.');
   }
 }
 
-/* =========================================
-   FIREBASE ERROR MESSAGE
-========================================= */
-
-function getFirebaseErrorMessage(error) {
-  if (!error) {
-    return 'An unexpected error occurred.';
-  }
-
-  console.error(error);
-
-  switch (error.code) {
-    case 'permission-denied':
-
-    case 'firestore/permission-denied':
-      return 'Permission denied. Check your Firestore security rules.';
-
-    case 'unavailable':
-
-    case 'firestore/unavailable':
-      return 'Firebase is temporarily unavailable. Please try again.';
-
-    case 'failed-precondition':
-
-    case 'firestore/failed-precondition':
-      return 'Firestore configuration requires attention.';
-
-    default:
-      return error.message || 'An unexpected error occurred.';
-  }
-}
-
-/* =========================================
-   INITIAL
-========================================= */
-
-function getInitial(name, email) {
-  const source = name || email || 'F';
-
-  return source.charAt(0).toUpperCase();
-}
-
-/* =========================================
-   HTML ESCAPE
-========================================= */
-
-function escapeHTML(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-
-    .replaceAll('<', '&lt;')
-
-    .replaceAll('>', '&gt;')
-
-    .replaceAll('"', '&quot;')
-
-    .replaceAll("'", '&#039;');
-}
-
-function escapeAttribute(value) {
-  return escapeHTML(value);
-}
-
-/* =========================================
-   LOGOUT
-========================================= */
+// ======================================================
+// LOGOUT
+// ======================================================
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
     try {
-      await signOut(auth);
+      await signOut(adminAuth);
 
       window.location.href = 'login.html';
     } catch (error) {
-      console.error('Logout failed:', error);
-
-      alert('Unable to logout. Please try again.');
+      console.error('Logout error:', error);
     }
   });
 }
